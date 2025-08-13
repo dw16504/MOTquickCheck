@@ -1,0 +1,45 @@
+//
+
+//  MOTquickCheck
+//
+//  Created by Douglas Webb on 2/15/25.
+//  Ucanoonuc Solutions (c) 2025
+
+// This application is a calculator to evaluate pilot compliance for FAR part 117
+// Compliance.
+
+// Tha Application will take duty and reserve start times and return an estimated or
+// Actual MOT time based on existing FAR 117 rules.
+
+// TODO: --
+
+// the brand coloring needs to be set and evauated for the Uncanoonun logos.
+
+
+
+// I think the Segment view controller view is too wide.
+
+// For some reasson, two digit segment entries are degaulting to hour plus first minute digit. Fix this.
+
+// The button seems to be cut of on the bottom on the horizontal segment list
+
+// There is a crash occurance on the delete segment feature that needs to be teased out
+
+// See if you cant clear out the layout flags.
+
+
+
+// THINGS TO DO ON THE SEGMENT LIST PAGE
+
+
+
+// 2.) Set Errors and color segment when triggered
+
+// 3.) add an add segment button
+
+// 4.) have the total recalculate when a segment is deleted
+
+// 5.) see if you can get the model to save.
+
+
+
