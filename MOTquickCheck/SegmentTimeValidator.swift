@@ -36,13 +36,8 @@ func segmentTimeValidator(input: String, segment: Int) throws{
             
         }
         
-        
     }
       
-        
-    
-    
-    
     
     var minutesEntry = input.suffix(2)
     var hoursEntry = ""

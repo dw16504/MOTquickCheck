@@ -41,5 +41,9 @@
 
 // 5.) see if you can get the model to save.
 
+// TODO: Restart here, I think the top list needs to be cleaned up.
 
+// I think the Segment View Controler is updateing the placeholder text and not the actual value in the field, unlike the Main view, I am basing this assumtion on the fact that the color changes on the main screen, and not the segment list controler./
+
+    
 

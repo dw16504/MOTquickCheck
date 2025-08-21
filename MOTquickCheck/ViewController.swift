@@ -8,16 +8,30 @@
 import UIKit
 
 var motModel = MOTModel()
-//var currentTime: Date =  now()
+var currentTimeDate: Date =  Date()
+let responseDateFormater = DateFormatter()
+
 
 class ViewController: UIViewController, UITextFieldDelegate {
  
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //var cal = Calendar.current
+        
+        //responseDateFormater.timeZone = TimeZone(abbreviation: "UTC")
+        responseDateFormater.timeZone = Calendar.current.timeZone
+
+        ReserveStartEntry.delegate = self
         dutyOnEntry.delegate = self
         actualBlockOutEntry.delegate = self
+        projectedBlockEntry.delegate = self
+        bufferEntry.delegate = self
         
+        responseDateFormater.dateFormat = "HH:mm"
+        currentTime.text = responseDateFormater.string(from: currentTimeDate)
+        
+        setTimeOption(motModel.useUTC)
         
     }
 
@@ -83,39 +97,48 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         if motModel.lineHolder == true{
             ReserveStartLabel.textColor = .systemGray4
-            ReserveStartEntryLabel.isEnabled = false
-            ReserveStartEntryLabel.textColor = .systemGray4
+            ReserveStartEntry.isEnabled = false
+            ReserveStartEntry.textColor = .systemGray4
             lineHolderLabel.text = "Line Holder"
             
         }else{
             ReserveStartLabel.textColor = .systemGray
-            ReserveStartEntryLabel.isEnabled = true
-            ReserveStartEntryLabel.textColor = .systemGray
+            ReserveStartEntry.isEnabled = true
+            ReserveStartEntry.textColor = .systemGray
             lineHolderLabel.text = "Reserve"
         }
         
     }
     
+    @IBAction func useUTCSelector(_ sender: UISwitch) {
+        
+        motModel.useUTC.toggle()
+        
+        print("Use UTC is set to: \(motModel.useUTC)")
+        
+        setTimeOption(motModel.useUTC)
+        
+    }
+    
+    @IBOutlet weak var timeSelectorLabel: UILabel!
+    
+    @IBOutlet weak var currentTimeLabel: UILabel!
+    
     @IBOutlet weak var currentTime: UILabel!
     
     @IBOutlet weak var ReserveStartLabel: UILabel!
     
+    @IBOutlet weak var ReserveStartEntry: UITextField!
     
-    // both action and output.. This block uses a direct access process for getting the data from the textField
-    @IBOutlet weak var ReserveStartEntryLabel: UITextField!
-    @IBAction func ReserveStartEntry(_ sender: UITextField) {
-        
-        let enteredData = ReserveStartEntryLabel.text
-        
-        do{
-            try print(timeValidator(stringInput: enteredData ?? ""))
-        }catch {
-            print(error)
-        }
-        
-    }
+    @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG3
     
     @IBOutlet weak var actualBlockOutEntry: UITextField!
+    
+    @IBOutlet weak var projectedBlockEntry: UITextField!
+    
+    @IBOutlet weak var bufferEntry: UITextField!
+    
+    
     
     @IBAction func MOTselector(_ sender: Any) {
     
@@ -124,16 +147,44 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     
-    // This one will use the didFinishEditign method as suggested in the documentation.
-    @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG3
+   
     
     
     func textFieldDidEndEditing(_ textField: UITextField){
         
-        print("The data entered into the textfield is: \(textField.text)")
-        print("The tag of the tex field used is: \(textField.tag)")
+        do{
+            let responseX = try timeValidator(stringInput: textField.text ?? "")
+            responseDateFormater.dateFormat = "HH:mm"
+            let stringEntered = (responseDateFormater.string(from: responseX))
+            
+            print("The Tag associated with the entry field is \(textField.tag)")
+            
+            textField.text = stringEntered
+            
+        }catch{
+            print(error)
+        }
         
     }
+    
+    func setTimeOption(_ input: Bool){
+        if input == false{
+            responseDateFormater.timeZone = Calendar.current.timeZone
+            timeSelectorLabel.text = "Local Time"
+            currentTimeLabel.text = responseDateFormater.timeZone.description
+            
+            currentTime.text = responseDateFormater.string(from: currentTimeDate)
+            
+        }else{
+            responseDateFormater.timeZone = TimeZone(abbreviation: "UTC")
+            timeSelectorLabel.text = "UTC"
+            currentTimeLabel.text = "Time UTC:"
+            
+            currentTime.text = responseDateFormater.string(from: currentTimeDate)
+        }
+    }
+    
+    
     
 }
 

@@ -16,8 +16,8 @@ class MOTcontroller: UIViewController {
         super.viewDidLoad()
         
         numberOfSegments.text = String(motModel.numberOfSegments)
-        print("Total Flight time: \(motModel.totalFlightTImeAsString)")
-        totalFlightTIme.text = motModel.totalFlightTImeAsString
+        print("Total Flight time: \(motModel.totalFlightTimeAsString)")
+        totalFlightTIme.text = motModel.totalFlightTimeAsString
     
     }
     @IBOutlet weak var numberOfSegments: UILabel!

@@ -31,6 +31,13 @@ class SegmentListController: UIViewController {
     }
     @IBAction func Return(_ sender: UIButton) {
         
+        // Pressing the back button stores the data in the model.
+        
+        print("The Value currently stored in motModel.number of segments is \(motModel.numberOfSegments)")
+        
+        print("The quantity of segments being stored are: \(segmentDataSource.count)")
+        motModel.numberOfSegments = segmentDataSource.count
+        
         self.dismiss(animated: true)
     }
     
