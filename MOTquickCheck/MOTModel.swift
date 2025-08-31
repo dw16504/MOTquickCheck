@@ -10,8 +10,6 @@ struct MOTModel{
     
     var totalFlightTimeAsString :String{
         
-        //A Calculated Property!
-        
         let hoursString = (Calendar.current.dateComponents([.hour], from: totalFlightTime!))
         let minuteString = (Calendar.current.dateComponents([.minute], from: totalFlightTime!))
         let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
@@ -25,6 +23,7 @@ struct MOTModel{
     var lineHolder :Bool = false
     var useUTC :Bool = false
     var numberOfSegments: Int = 0
+    var dutyOn :Date = Date()  // This is in progress
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
 }

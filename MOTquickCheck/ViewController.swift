@@ -141,8 +141,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func MOTselector(_ sender: Any) {
+        
+        print("Go to Mot Selector")
+        
+        print(motModel)
     
         performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
+        
+        
     }
     
     
@@ -158,6 +164,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             let stringEntered = (responseDateFormater.string(from: responseX))
             
             print("The Tag associated with the entry field is \(textField.tag)")
+            
+            
+            // I THINK THIS IS WHERE I NEED TO ASSIGN VALUES ?
             
             textField.text = stringEntered
             
