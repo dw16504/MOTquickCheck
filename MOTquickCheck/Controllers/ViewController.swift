@@ -16,10 +16,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
  
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         
-        //var cal = Calendar.current
         
-        //responseDateFormater.timeZone = TimeZone(abbreviation: "UTC")
         responseDateFormater.timeZone = Calendar.current.timeZone
 
         ReserveStartEntry.delegate = self
@@ -35,16 +34,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
 
-    
-    @IBAction func segmentsSelector(_ sender: UISegmentedControl) {
+    @IBAction func AddBlockButton(_ sender: UIButton) {
         
-        motModel.numberOfSegments = sender.selectedSegmentIndex + 1
-    
-        generateSegmentDataSource(numberOfSegments: sender.selectedSegmentIndex)
         
         performSegue(withIdentifier: "gotoSegmentList", sender: self)
-        
     }
+    
+//    @IBAction func segmentsSelector(_ sender: UISegmentedControl) {
+//        
+//        motModel.numberOfSegments = sender.selectedSegmentIndex + 1
+//    
+//        generateSegmentDataSource(numberOfSegments: sender.selectedSegmentIndex)
+//        
+//        performSegue(withIdentifier: "gotoSegmentList", sender: self)
+//        
+//    }
     
     
     
@@ -128,6 +132,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var ReserveStartLabel: UILabel!
     
+   // @IBOutlet weak var ReserveStartEntry: UITextField!
     @IBOutlet weak var ReserveStartEntry: UITextField!
     
     @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG3

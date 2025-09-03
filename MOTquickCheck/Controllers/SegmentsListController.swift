@@ -9,6 +9,15 @@ import UIKit
 
 var segmentDataSource = [SegmentModel]()
 
+func addSegment(){
+    
+    segmentDataSource.append(SegmentModel(isErrored: false, segmentNumber: 1, segmentDescription: "Flight \(segmentDataSource.count+1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
+    
+    
+}
+
+
+
 
 class SegmentListController: UIViewController {
     
@@ -21,21 +30,27 @@ class SegmentListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addSegment()
+        
         errorLabel.text = ""
+        segmentTotalLabel!.text = motModel.timeAsString(motModel.totalFlightTime!)
         
         tableView.dataSource = self
         tableView.delegate = self
         
         
         
+        
     }
+    
+    
+    
+    
+    
     @IBAction func Return(_ sender: UIButton) {
         
         // Pressing the back button stores the data in the model.
-        
-        print("The Value currently stored in motModel.number of segments is \(motModel.numberOfSegments)")
-        
-        print("The quantity of segments being stored are: \(segmentDataSource.count)")
+    
         motModel.numberOfSegments = segmentDataSource.count
         
         self.dismiss(animated: true)
@@ -54,15 +69,19 @@ protocol CellButtonDelegate{
 }
 
 // Delegator (Parent)  class, defines the delegate property, then calls the function, this is the class that wants somthing done.
+
 class SegmentCell: UITableViewCell {
     
     var delegate: CellButtonDelegate?
-    
     
     @IBOutlet var segmentTimeLable: UILabel?
     
     @IBAction func segmentUpdate(_ sender: UITextField) {
         print("update Segment Selected")
+        
+        //This does not do anything yet, if it's not needed delete thios action and make set
+        //The UI to not be user interactive.
+        
     }
 
     @IBAction func segmentDeleted(_ sender: UIButton) {
@@ -89,9 +108,6 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return segmentDataSource.count
     }
-    
-    
-    
     
     
     

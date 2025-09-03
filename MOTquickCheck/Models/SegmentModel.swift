@@ -14,7 +14,7 @@ struct SegmentModel{
     var segmentTimeAsAString: String
     var segmentColor: UIColor
     var segmentInSeconds: Int
-    var segmentTime: Date? //For now, this will eventualy need to be changed to a DATE type
+    var segmentTime: Date?
     
 }
 
@@ -24,16 +24,16 @@ struct SegmentModel{
 
 
     
-    func generateSegmentDataSource(numberOfSegments: Int){
-        
-        segmentDataSource = [SegmentModel]()
-        
-        for item in (0...numberOfSegments){
-            
-            segmentDataSource.append(SegmentModel(isErrored: false, segmentNumber: item, segmentDescription: "Segment \(item + 1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
-            
-        }
-        
-    }
+//    func generateSegmentDataSource(numberOfSegments: Int){
+//        
+//        segmentDataSource = [SegmentModel]()
+//        
+//        for item in (0...numberOfSegments){
+//            
+//            segmentDataSource.append(SegmentModel(isErrored: false, segmentNumber: item, segmentDescription: "Segment \(item + 1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
+//            
+//        }
+//        
+//    }
     
 

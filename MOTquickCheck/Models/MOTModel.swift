@@ -6,6 +6,13 @@
 //
 import Foundation
 
+ 
+
+//This is a method that takes a raw Date Time and Converts it to a useable String,
+
+//TODO: GIVE THIS FUNCTION AN INPUT PARAMETER THAT WILL RETURN ANY TIME VALUE IN THE MODEL AS A STRING INSTEAD OF JUST
+//TOTAL FLIGHT TIME.
+
 struct MOTModel{
     
     var totalFlightTimeAsString :String{
@@ -15,6 +22,17 @@ struct MOTModel{
         let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
         return ("\(hoursString.hour!):\(formattedMinutes)")
     }
+    
+    func timeAsString(_ timeToConvert: Date) -> String{
+        
+        let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
+        let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
+        let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+        return ("\(hoursString.hour!):\(formattedMinutes)")
+    }
+    
+    
+    
     
     
     var augmented :Bool = false
