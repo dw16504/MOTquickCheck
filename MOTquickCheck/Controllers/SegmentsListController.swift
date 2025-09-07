@@ -9,13 +9,19 @@ import UIKit
 
 var segmentDataSource = [SegmentModel]()
 
+
+
 func addSegment(){
     
-    segmentDataSource.append(SegmentModel(isErrored: false, segmentNumber: 1, segmentDescription: "Flight \(segmentDataSource.count+1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
+    segmentDataSource.append(SegmentModel(isFocused: true, isErrored: false, segmentNumber: 1, segmentDescription: "Flight \(segmentDataSource.count+1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
     
-    
-}
+    let indexPath = IndexPath(row: 0, section: 0) // Specify your row/section
 
+    
+    
+    
+   
+}
 
 
 
@@ -26,6 +32,7 @@ class SegmentListController: UIViewController {
     @IBOutlet weak var errorLabel: UILabel!
     
     
+     
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,13 +45,9 @@ class SegmentListController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        
-        
+       
         
     }
-    
-    
-    
     
     
     @IBAction func Return(_ sender: UIButton) {
@@ -54,6 +57,19 @@ class SegmentListController: UIViewController {
         motModel.numberOfSegments = segmentDataSource.count
         
         self.dismiss(animated: true)
+    }
+    
+    @IBAction func AddSegment(_ sender: UIButton) {
+        
+        addSegment()
+        tableView.reloadData()
+        
+    }
+    
+    @IBAction func ClearAll(_ sender: UIButton) {
+        print("Clear All Pressed")
+        segmentDataSource.removeAll()
+        tableView.reloadData()
     }
     
 }
@@ -70,32 +86,104 @@ protocol CellButtonDelegate{
 
 // Delegator (Parent)  class, defines the delegate property, then calls the function, this is the class that wants somthing done.
 
+//class SegmentCell: UITableViewCell {
+//    
+//    var delegate: CellButtonDelegate?
+//    
+//    @IBOutlet var segmentTimeLable: UILabel?
+//    
+//    
+//    
+//    @IBAction func segmentUpdate(_ sender: UITextField) {
+//        print("update Segment Selected")
+//        
+//        //This does not do anything yet, if it's not needed delete thios action and make set
+//        //The UI to not be user interactive.
+//        
+//    }
+//
+//    @IBAction func segmentDeleted(_ sender: UIButton) {
+//        
+//        delegate?.didSegmentDeletedAction(with: sender)
+//        
+//        
+//    }
+//    
+//    @IBOutlet var deleteButton: UIButton?
+//    @IBOutlet weak var segmentTime: UITextField!
+//    
+//    
+//}
+
+
+
+
+
+
+
+
+
 class SegmentCell: UITableViewCell {
     
     var delegate: CellButtonDelegate?
     
     @IBOutlet var segmentTimeLable: UILabel?
+    @IBOutlet var deleteButton: UIButton?
+    @IBOutlet weak var segmentTime: UITextField!
+    
+    func setupTextField() {
+        segmentTime.keyboardType = .numberPad
+        
+        let customButton = UIButton(type: .system)
+        customButton.setTitle("Enter", for: .normal)
+        customButton.addTarget(self, action: #selector(dismissKeyboard), for: .touchUpInside)
+
+        // Style your custom button
+        customButton.layer.borderWidth = 1.0
+        customButton.layer.borderColor = UIColor.systemBlue.cgColor
+        customButton.layer.cornerRadius = 4.0
+        customButton.frame.size.width = 100
+        customButton.backgroundColor = UIColor.clear //COLOR FIX
+        
+        let customBarButton = UIBarButtonItem(customView: customButton)
+   
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+    
+        let flexSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        
+        toolbar.items = [flexSpace, customBarButton, flexSpace]
+        segmentTime.inputAccessoryView = toolbar
+    }
+    
+    @objc func dismissKeyboard() {
+        segmentTime.resignFirstResponder()
+        // Call the existing segmentUpdate method to handle the logic
+        segmentUpdate(segmentTime)
+    }
     
     @IBAction func segmentUpdate(_ sender: UITextField) {
         print("update Segment Selected")
         
-        //This does not do anything yet, if it's not needed delete thios action and make set
+        //This does not do anything yet, if it's not needed delete this action and make set
         //The UI to not be user interactive.
         
+        // You can add your segment update logic here
+        // The text field value is available as sender.text
     }
 
     @IBAction func segmentDeleted(_ sender: UIButton) {
-        
         delegate?.didSegmentDeletedAction(with: sender)
-        
     }
-    
-    @IBOutlet var deleteButton: UIButton?
-    @IBOutlet weak var segmentTime: UITextField!
 }
 
 
 
+/////////////////////
 
 
 
@@ -123,6 +211,7 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
         
         
         cell.delegate = self
+        cell.setupTextField()
         cell.segmentTime.delegate = self
         //cell.segmentTimeLable?.text = "test"
         cell.segmentTimeLable!.text = segmentDataSource[indexPath.row].segmentDescription
@@ -130,6 +219,19 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
         cell.segmentTime.textColor = UIColor.lightGray
         cell.deleteButton?.tag = indexPath.row
         cell.segmentTime.tag = indexPath.row
+        
+        if segmentDataSource[indexPath.row].isFocused == true{
+            
+            print("FOCUSED")
+            
+            cell.segmentTime.becomeFirstResponder()
+        }
+        
+        
+        
+        
+        cell.segmentTime.keyboardType = .numberPad
+        
         
         if segmentDataSource[indexPath.row].isErrored{
             cell.backgroundColor = UIColor.systemYellow
@@ -144,9 +246,10 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print ("The user Selected the Cell at index row \(segmentDataSource[indexPath.row])")
         
-        //TODO: - pick it up here
         
-        //print ("The tag at the selected row is \(String(tableView))")
+        let selIndex = tableView.indexPathForSelectedRow
+        print("The index path at the selected row is \(selIndex)")
+        
     }
     
     func didSegmentDeletedAction(with: UIButton) {
@@ -186,7 +289,7 @@ extension SegmentListController: UITextFieldDelegate {
             tableView.reloadData()
             
         }catch segmentEntryError.noEntry{
-            print("From the view Controller, Th entry has no information")
+            print("From the view Controller, The entry has no information")
         }catch{
             print("Now for somthing completly different")
         }

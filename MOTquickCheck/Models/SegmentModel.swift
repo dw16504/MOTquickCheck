@@ -8,6 +8,7 @@ import UIKit
 
 struct SegmentModel{
     
+    var isFocused: Bool
     var isErrored: Bool
     var segmentNumber: Int
     var segmentDescription: String
