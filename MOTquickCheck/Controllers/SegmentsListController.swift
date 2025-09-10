@@ -15,11 +15,6 @@ func addSegment(){
     
     segmentDataSource.append(SegmentModel(isFocused: true, isErrored: false, segmentNumber: 1, segmentDescription: "Flight \(segmentDataSource.count+1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
     
-    let indexPath = IndexPath(row: 0, section: 0) // Specify your row/section
-
-    
-    
-    
    
 }
 
@@ -45,7 +40,6 @@ class SegmentListController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-       
         
     }
     
@@ -83,45 +77,6 @@ protocol CellButtonDelegate{
     func didSegmentDeletedAction(with title: UIButton)
     
 }
-
-// Delegator (Parent)  class, defines the delegate property, then calls the function, this is the class that wants somthing done.
-
-//class SegmentCell: UITableViewCell {
-//    
-//    var delegate: CellButtonDelegate?
-//    
-//    @IBOutlet var segmentTimeLable: UILabel?
-//    
-//    
-//    
-//    @IBAction func segmentUpdate(_ sender: UITextField) {
-//        print("update Segment Selected")
-//        
-//        //This does not do anything yet, if it's not needed delete thios action and make set
-//        //The UI to not be user interactive.
-//        
-//    }
-//
-//    @IBAction func segmentDeleted(_ sender: UIButton) {
-//        
-//        delegate?.didSegmentDeletedAction(with: sender)
-//        
-//        
-//    }
-//    
-//    @IBOutlet var deleteButton: UIButton?
-//    @IBOutlet weak var segmentTime: UITextField!
-//    
-//    
-//}
-
-
-
-
-
-
-
-
 
 class SegmentCell: UITableViewCell {
     
@@ -183,15 +138,7 @@ class SegmentCell: UITableViewCell {
 
 
 
-/////////////////////
-
-
-
-// Delegate (Child) Class, conforms to the protocol and defines the function called by the parent.
 extension SegmentListController: UITableViewDataSource, UITableViewDelegate, CellButtonDelegate{
-    
-    //the dataSource Protocol lets it get the data, the Delegate allows interactiion (you can click
-    //on it.
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return segmentDataSource.count
@@ -222,13 +169,9 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
         
         if segmentDataSource[indexPath.row].isFocused == true{
             
-            print("FOCUSED")
-            
             cell.segmentTime.becomeFirstResponder()
         }
-        
-        
-        
+         
         
         cell.segmentTime.keyboardType = .numberPad
         
@@ -268,7 +211,7 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
 extension SegmentListController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        print("The textfield did End editing!")
+  
         
         do{
             try segmentTimeValidator(input:textField.text!, segment: textField.tag)
@@ -294,8 +237,6 @@ extension SegmentListController: UITextFieldDelegate {
             print("Now for somthing completly different")
         }
         
-        //segmentTotalLabel!.text = SegmentTotaler()
-        //tableView.reloadData()
     }
     
    func textFieldDidBeginEditing(_ textField: UITextField) {
