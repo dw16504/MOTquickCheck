@@ -10,6 +10,12 @@ import UIKit
 var segmentDataSource = [SegmentModel]()
 
 
+// This protocol defines what the secondary view can tell the main view
+// I have updated the name and the value Type to an MOTModel
+protocol SegmentListDelegate: AnyObject {
+    func didUpdateValue(_ value: MOTModel)
+}
+
 
 func addSegment(){
     
@@ -26,6 +32,8 @@ class SegmentListController: UIViewController {
     @IBOutlet weak var segmentTotalLabel: UILabel?
     @IBOutlet weak var errorLabel: UILabel!
     
+    weak var delegate: SegmentListDelegate?
+    
     
      
     
@@ -41,6 +49,11 @@ class SegmentListController: UIViewController {
         tableView.delegate = self
         
         
+        
+        
+        
+        
+        
     }
     
     
@@ -49,6 +62,13 @@ class SegmentListController: UIViewController {
         // Pressing the back button stores the data in the model.
     
         motModel.numberOfSegments = segmentDataSource.count
+        
+        print("THe Exit Button Was pressed")
+        print("The number of segments in the model is: \(motModel.numberOfSegments)")
+        
+        
+        // This is trying to use the Delegate method.
+        delegate?.didUpdateValue(motModel)
         
         self.dismiss(animated: true)
     }
@@ -122,7 +142,7 @@ class SegmentCell: UITableViewCell {
     }
     
     @IBAction func segmentUpdate(_ sender: UITextField) {
-        print("update Segment Selected")
+        print("update Segment Selected!!!!!!!!!!!!")
         
         //This does not do anything yet, if it's not needed delete this action and make set
         //The UI to not be user interactive.
@@ -147,22 +167,17 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        //At this particular row, what kind of cell do we want to return
-        
+         
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SegmentCell
-        
-        // "cell" is the reuse identifier that was input on the storyboard
-        // I think index path is returned from the above callback and cycles through the table
-        
         
         cell.delegate = self
         cell.setupTextField()
         cell.segmentTime.delegate = self
-        //cell.segmentTimeLable?.text = "test"
         cell.segmentTimeLable!.text = segmentDataSource[indexPath.row].segmentDescription
         cell.segmentTime.text = segmentDataSource[indexPath.row].segmentTimeAsAString
+        cell.segmentTime.placeholder = segmentDataSource[indexPath.row].segmentTimeAsAString
+        
         cell.segmentTime.textColor = UIColor.lightGray
         cell.deleteButton?.tag = indexPath.row
         cell.segmentTime.tag = indexPath.row
@@ -211,8 +226,8 @@ extension SegmentListController: UITableViewDataSource, UITableViewDelegate, Cel
 extension SegmentListController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-  
         
+
         do{
             try segmentTimeValidator(input:textField.text!, segment: textField.tag)
             

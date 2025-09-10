@@ -12,12 +12,19 @@ var currentTimeDate: Date =  Date()
 let responseDateFormater = DateFormatter()
 
 
-class ViewController: UIViewController, UITextFieldDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate {
+    
+    func didUpdateValue(_ value: MOTModel) {
+        
+        numberOFSegmentsLabel.text = String(value.numberOfSegments)
+        totalFlightTImeLabel.text = value.totalFlightTimeAsString
+        
+    }
+    
  
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        
         
         responseDateFormater.timeZone = Calendar.current.timeZone
 
@@ -30,27 +37,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         responseDateFormater.dateFormat = "HH:mm"
         currentTime.text = responseDateFormater.string(from: currentTimeDate)
         
+        numberOFSegmentsLabel.text = String(motModel.numberOfSegments)
+        
         setTimeOption(motModel.useUTC)
         
     }
+    
+    
 
     @IBAction func AddBlockButton(_ sender: UIButton) {
         
+        let secondaryVC = storyboard!.instantiateViewController(withIdentifier: "SegmentListID") as! SegmentListController
         
-        performSegue(withIdentifier: "gotoSegmentList", sender: self)
+        secondaryVC.delegate = self
+        present(secondaryVC, animated: true)
+        
     }
     
-//    @IBAction func segmentsSelector(_ sender: UISegmentedControl) {
-//        
-//        motModel.numberOfSegments = sender.selectedSegmentIndex + 1
-//    
-//        generateSegmentDataSource(numberOfSegments: sender.selectedSegmentIndex)
-//        
-//        performSegue(withIdentifier: "gotoSegmentList", sender: self)
-//        
-//    }
+
     
+    @IBOutlet weak var numberOFSegmentsLabel: UILabel!
     
+    @IBOutlet weak var totalFlightTImeLabel: UILabel!
     
     @IBOutlet weak var AugmentedLabel: UILabel!
     
