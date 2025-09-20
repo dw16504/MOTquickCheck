@@ -63,12 +63,7 @@ func timeValidator(stringInput: String) throws -> Date {
     let returnTimeInSeconds = ((((Int(hoursEntry) ?? 0) * 60 * 60)) + (Int(minutesEntry)! * 60))
     
     
-    
-    
     print("The Time entered is: \(hoursEntry):\(minutesEntry)")
-    
-    
-    
     
     return returnTime
     

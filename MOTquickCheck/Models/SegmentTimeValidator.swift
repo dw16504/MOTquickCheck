@@ -77,8 +77,6 @@ func segmentTimeValidator(input: String, segment: Int) throws{
     print("The value entered in segment date is: \(segmentDataSource[segment].segmentTime)")
     print("This is the value decoded: \(Calendar.current.dateComponents([.hour,.minute], from: segmentDataSource[segment].segmentTime!))")
     
-    
-    
 }
 
 func clearTheSelectedTextField(segment:Int){

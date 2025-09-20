@@ -21,18 +21,68 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
     }
     
- 
+//This function customizes the Data Entry Keyboard
+    // Im going to try the Duty on block first and then see if i cant make this a reusable function.
+    
+    func setupTextField(targetField : UITextField) {
+        targetField.keyboardType = .numberPad
+        
+        let customButton = UIButton(type: .system)
+        customButton.setTitle("Enter", for: .normal)
+        customButton.addTarget(self, action: #selector(dismissKeyboard), for: .touchUpInside)
+
+        // Style The custom button
+        customButton.layer.borderWidth = 1.0
+        customButton.layer.borderColor = UIColor.systemBlue.cgColor
+        customButton.layer.cornerRadius = 4.0
+        customButton.frame.size.width = 100
+        customButton.backgroundColor = UIColor.clear //COLOR FIX
+        
+        let customBarButton = UIBarButtonItem(customView: customButton)
+   
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+    
+        let flexSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        
+        toolbar.items = [flexSpace, customBarButton, flexSpace]
+        targetField.inputAccessoryView = toolbar
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+
     override func viewDidLoad() {
         super.viewDidLoad()
        
         
         responseDateFormater.timeZone = Calendar.current.timeZone
-
+        
+        // TAG 2
         ReserveStartEntry.delegate = self
+        setupTextField(targetField: ReserveStartEntry)
+        
+        // TAG 3
         dutyOnEntry.delegate = self
+        setupTextField(targetField: dutyOnEntry)
+        
+        // TAG 4
         actualBlockOutEntry.delegate = self
+        setupTextField(targetField: actualBlockOutEntry)
+        
+        //TAG 5
         projectedBlockEntry.delegate = self
+        setupTextField(targetField: projectedBlockEntry)
+        
+        //TAG 6
         bufferEntry.delegate = self
+        setupTextField(targetField: bufferEntry)
         
         responseDateFormater.dateFormat = "HH:mm"
         currentTime.text = responseDateFormater.string(from: currentTimeDate)
@@ -97,9 +147,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         }
         
     }
-    
- 
-    
+  
     
     @IBOutlet weak var lineHolderLabel: UILabel!
     @IBAction func LineHolderToggel(_ sender: Any) {
@@ -125,9 +173,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     @IBAction func useUTCSelector(_ sender: UISwitch) {
         
         motModel.useUTC.toggle()
-        
-        print("Use UTC is set to: \(motModel.useUTC)")
-        
         setTimeOption(motModel.useUTC)
         
     }
@@ -136,32 +181,26 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
     @IBOutlet weak var currentTimeLabel: UILabel!
     
-    @IBOutlet weak var currentTime: UILabel!
+    @IBOutlet weak var currentTime: UILabel! // set to TAG 0
     
     @IBOutlet weak var ReserveStartLabel: UILabel!
     
-   // @IBOutlet weak var ReserveStartEntry: UITextField!
-    @IBOutlet weak var ReserveStartEntry: UITextField!
+    @IBOutlet weak var ReserveStartEntry: UITextField! //set to TAG 2
     
-    @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG3
+    @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG 3
     
-    @IBOutlet weak var actualBlockOutEntry: UITextField!
+    @IBOutlet weak var actualBlockOutEntry: UITextField! //set to TAG 4
     
-    @IBOutlet weak var projectedBlockEntry: UITextField!
+    @IBOutlet weak var projectedBlockEntry: UITextField! // set to TAG 5
     
-    @IBOutlet weak var bufferEntry: UITextField!
-    
+    @IBOutlet weak var bufferEntry: UITextField! // set to TAG 6
     
     
+   // Action that goes to MOTController
     @IBAction func MOTselector(_ sender: Any) {
-        
-        print("Go to Mot Selector")
-        
-        print(motModel)
     
         performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
-        
-        
+       
     }
     
     
@@ -175,13 +214,31 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             let responseX = try timeValidator(stringInput: textField.text ?? "")
             responseDateFormater.dateFormat = "HH:mm"
             let stringEntered = (responseDateFormater.string(from: responseX))
+          
             
-            print("The Tag associated with the entry field is \(textField.tag)")
+            switch textField.tag{
+                
+            case 2:
+                motModel.reserveStart = responseX
+            case 3:
+                motModel.dutyOn = responseX
+            case 4:
+                motModel.actualBlockOut = responseX
+            case 5:
+                motModel.actualBlockOut = responseX
+            case 6:
+                motModel.buffer = responseX
+            default:
+                print("Error: no update was made in the DidEndEditing Switch statement")
+                
+            }
             
+            print("The last two values to be checked ActualBlock  \(motModel.timeAsString(motModel.actualBlockOut)) and buffer \(motModel.timeAsString(motModel.buffer))")
             
-            // I THINK THIS IS WHERE I NEED TO ASSIGN VALUES ?
             
             textField.text = stringEntered
+            
+            
             
         }catch{
             print(error)

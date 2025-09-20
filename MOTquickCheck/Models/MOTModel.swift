@@ -41,7 +41,11 @@ struct MOTModel{
     var lineHolder :Bool = false
     var useUTC :Bool = false
     var numberOfSegments: Int = 0
-    var dutyOn :Date = Date()  // This is in progress
+    var reserveStart :Date = Date() //TAG 2
+    var dutyOn :Date = Date() //TAG 3
+    var actualBlockOut :Date = Date() //TAG 4
+    var projcetedBlock :Date = Date() //TAG 5
+    var buffer :Date = Date() //TAG 6
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
 }
