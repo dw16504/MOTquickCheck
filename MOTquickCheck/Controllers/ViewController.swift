@@ -6,13 +6,20 @@
 //
 
 import UIKit
+import CoreLocation
+
+// Global Stuff
 
 var motModel = MOTModel()
 var currentTimeDate: Date =  Date()
 let responseDateFormater = DateFormatter()
 
 
-class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate, CLLocationManagerDelegate {
+ 
+    let locationManager = CLLocationManager()
+    let geocoder = CLGeocoder()
+    
     
     func didUpdateValue(_ value: MOTModel) {
         
@@ -20,6 +27,27 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         totalFlightTImeLabel.text = value.totalFlightTimeAsString
         
     }
+    
+    
+    // This section gets location and processes Time zone data.
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        geocoder.reverseGeocodeLocation(locations.last!){ placemarks, error in
+            
+            if let placemark = placemarks?.first{
+                motModel.currentTimeZone = placemark.timeZone?.description ?? "error writing TimeZone"
+            }else{
+                print("ERROR 2: Unable to assign timezone to placemark")
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        print("ERROR 3: Unable to determine Location")
+    }
+    
+    
+    
     
 //This function customizes the Data Entry Keyboard
     // Im going to try the Duty on block first and then see if i cant make this a reusable function.
@@ -57,10 +85,23 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         view.endEditing(true)
     }
     
+    
+    // Stuff that happens when view opens.
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+        
+        
+        
+        
+        
+        print("The current timezone set by the user is: \(Calendar.current.timeZone)")
+        print("The TimeZone from current Location os: \(motModel.currentTimeZone)")
         
         responseDateFormater.timeZone = Calendar.current.timeZone
         
@@ -141,9 +182,9 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         motModel.aclimated.toggle()
         
         if motModel.aclimated == true{
-            AclimatedLabel.text = "Aclimated"
+            AclimatedLabel.text = "Aclimated to Base"
         }else{
-            AclimatedLabel.text = "UnAclimated"
+            AclimatedLabel.text = "Unaclimated"
         }
         
     }

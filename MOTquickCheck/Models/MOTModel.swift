@@ -34,7 +34,7 @@ struct MOTModel{
     
     
     
-    
+    var currentTimeZone :String = Calendar.current.timeZone.description // defaults to user defined
     var augmented :Bool = false
     var restFacility :Int = 1
     var aclimated :Bool = true
