@@ -44,5 +44,3 @@
 // I think the Segment View Controler is updateing the placeholder text and not the actual value in the field, unlike the Main view, I am basing this assumtion on the fact that the color changes on the main screen, and not the segment list controler./
 
 // Core Location set up on inital start, I dont think it works until the user allows location permissions. I believe this will cause a crash the first time.
-
-// This is a modiification to trigger a Push option in Git

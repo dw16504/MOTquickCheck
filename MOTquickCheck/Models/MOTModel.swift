@@ -48,6 +48,17 @@ struct MOTModel{
     var buffer :Date = Date() //TAG 6
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
+    
+    //calculated Properties
+    
+    var maxDutyPerod: Date {
+        
+        //put logic for calculating max duty period here
+        
+        
+        return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))! // zero Value
+    }
+    
 }
 
 

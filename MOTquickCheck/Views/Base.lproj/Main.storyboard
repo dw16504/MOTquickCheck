@@ -957,11 +957,47 @@
                                                             <constraint firstItem="GCP-Lb-NrL" firstAttribute="leading" secondItem="MTa-cW-OmD" secondAttribute="leading" id="wHc-I6-k5m"/>
                                                         </constraints>
                                                     </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wxq-5Y-qsA" userLabel="Line 3">
+                                                        <rect key="frame" x="31.666666666666657" y="105" width="330" height="30"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Duty Period:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k4f-o9-a2f">
+                                                                <rect key="frame" x="0.0" y="0.0" width="182.33333333333334" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="30" id="O3E-Ih-UKx"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                                <color key="textColor" systemColor="systemGrayColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8Z-ce-yES">
+                                                                <rect key="frame" x="271" y="0.0" width="59" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="30" id="a6J-eJ-I5A"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                                <color key="textColor" systemColor="systemGrayColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="q8Z-ce-yES" secondAttribute="trailing" id="6Ne-tr-5g3"/>
+                                                            <constraint firstAttribute="height" constant="30" id="I1T-qP-5rC"/>
+                                                            <constraint firstAttribute="width" constant="330" id="KCL-u3-pHk"/>
+                                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="RlF-jy-1gz"/>
+                                                            <constraint firstItem="q8Z-ce-yES" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="k4f-o9-a2f" secondAttribute="trailing" constant="8" symbolic="YES" id="Smu-EJ-f6i"/>
+                                                            <constraint firstAttribute="bottom" secondItem="q8Z-ce-yES" secondAttribute="bottom" id="T2b-gS-SDH"/>
+                                                            <constraint firstItem="k4f-o9-a2f" firstAttribute="leading" secondItem="wxq-5Y-qsA" secondAttribute="leading" id="hV3-XF-3Xr"/>
+                                                            <constraint firstItem="k4f-o9-a2f" firstAttribute="top" secondItem="wxq-5Y-qsA" secondAttribute="top" id="wjU-NU-s10"/>
+                                                        </constraints>
+                                                    </view>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
+                                                    <constraint firstItem="wxq-5Y-qsA" firstAttribute="top" secondItem="MTa-cW-OmD" secondAttribute="bottom" constant="15" id="0fj-RI-bJf"/>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="750" constant="393" id="17J-ay-ZMm"/>
                                                     <constraint firstItem="N33-6V-4vs" firstAttribute="centerX" secondItem="L5R-te-O35" secondAttribute="centerX" id="3Qa-i1-ozq"/>
+                                                    <constraint firstItem="wxq-5Y-qsA" firstAttribute="centerX" secondItem="L5R-te-O35" secondAttribute="centerX" id="LSj-y4-r6v"/>
                                                     <constraint firstItem="MTa-cW-OmD" firstAttribute="centerX" secondItem="L5R-te-O35" secondAttribute="centerX" id="dwE-8v-9On"/>
                                                     <constraint firstAttribute="height" constant="300" id="orB-Zf-lrf"/>
                                                     <constraint firstItem="N33-6V-4vs" firstAttribute="top" secondItem="L5R-te-O35" secondAttribute="top" constant="15" id="pmN-cl-LJi"/>
@@ -1049,6 +1085,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="C0H-ts-m9e"/>
                     <connections>
+                        <outlet property="MaXDutyPeriodLabel" destination="q8Z-ce-yES" id="nlI-UO-KKA"/>
                         <outlet property="numberOfSegments" destination="YUg-mj-BTr" id="xCI-2b-H2S"/>
                         <outlet property="totalFlightTIme" destination="0OO-gU-D2u" id="2vt-Sb-aYh"/>
                     </connections>

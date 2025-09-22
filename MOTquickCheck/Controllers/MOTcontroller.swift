@@ -15,17 +15,17 @@ class MOTcontroller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("The user location is now set to: \(motModel.currentTimeZone)")
-        
         numberOfSegments.text = String(motModel.numberOfSegments)
-        print("Total Flight time as String: \(motModel.totalFlightTimeAsString)")
         totalFlightTIme.text = motModel.totalFlightTimeAsString
+        MaXDutyPeriodLabel.text = motModel.timeAsString(motModel.maxDutyPerod)
+        
     
         print("The Duty on time is \(motModel.dutyOn)")
         
     }
     @IBOutlet weak var numberOfSegments: UILabel!
     @IBOutlet weak var totalFlightTIme: UILabel!
+    @IBOutlet weak var MaXDutyPeriodLabel: UILabel!
     
     @IBAction func returnToMainPage(_ sender: Any) {
         
