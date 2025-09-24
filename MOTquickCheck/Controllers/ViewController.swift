@@ -35,9 +35,10 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         geocoder.reverseGeocodeLocation(locations.last!){ placemarks, error in
             
             if let placemark = placemarks?.first{
-                motModel.currentTimeZone = placemark.timeZone?.description ?? "error writing TimeZone"
+                motModel.currentTimeZone = placemark.timeZone!
             }else{
                 print("ERROR 2: Unable to assign timezone to placemark")
+                print(error)
             }
         }
     }
@@ -273,10 +274,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
                 print("Error: no update was made in the DidEndEditing Switch statement")
                 
             }
-            
-            print("The last two values to be checked ActualBlock  \(motModel.timeAsString(motModel.actualBlockOut)) and buffer \(motModel.timeAsString(motModel.buffer))")
-            
-            
+           
             textField.text = stringEntered
             
             
