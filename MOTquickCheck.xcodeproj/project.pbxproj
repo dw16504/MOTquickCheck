@@ -24,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3508493F2E96A63B00B9DF2B /* MOTquickCheck.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = MOTquickCheck.xcodeproj; sourceTree = "<group>"; };
 		351E64E62CFF8866006AE646 /* MOTquickCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MOTquickCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		351E64FC2CFF8868006AE646 /* MOTquickCheckTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MOTquickCheckTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		351E65062CFF8868006AE646 /* MOTquickCheckUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MOTquickCheckUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,12 +86,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3508493E2E96A63A00B9DF2B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3508493F2E96A63B00B9DF2B /* MOTquickCheck.xcodeproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		350849402E96A63B00B9DF2B /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		351E64DD2CFF8866006AE646 = {
 			isa = PBXGroup;
 			children = (
 				351E64E82CFF8866006AE646 /* MOTquickCheck */,
 				351E64FF2CFF8868006AE646 /* MOTquickCheckTests */,
 				351E65092CFF8868006AE646 /* MOTquickCheckUITests */,
+				3508493E2E96A63A00B9DF2B /* Frameworks */,
 				351E64E72CFF8866006AE646 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -211,6 +226,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 351E64E72CFF8866006AE646 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 350849402E96A63B00B9DF2B /* Products */;
+					ProjectRef = 3508493F2E96A63B00B9DF2B /* MOTquickCheck.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				351E64E52CFF8866006AE646 /* MOTquickCheck */,
@@ -289,6 +310,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29ZK3U84Q9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MOTquickCheck/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -316,6 +338,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29ZK3U84Q9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MOTquickCheck/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

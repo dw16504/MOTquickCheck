@@ -10,6 +10,10 @@ import CoreLocation
 
 // Global Stuff
 
+var companyBlue = (hex:"#00b1fc",rgb:"rgb(0, 178, 255)")
+var companyPurple = (hex:"#551cc7",rgb:"rgb(85, 28, 199)")
+
+
 var motModel = MOTModel()
 var currentTimeDate: Date =  Date()
 let responseDateFormater = DateFormatter()
@@ -51,7 +55,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
     
 //This function customizes the Data Entry Keyboard
-    // Im going to try the Duty on block first and then see if i cant make this a reusable function.
+   
     
     func setupTextField(targetField : UITextField) {
         targetField.keyboardType = .numberPad
@@ -97,12 +101,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         
-        
-        
-        
-        
-        print("The current timezone set by the user is: \(Calendar.current.timeZone)")
-        print("The TimeZone from current Location os: \(motModel.currentTimeZone)")
         
         responseDateFormater.timeZone = Calendar.current.timeZone
         
@@ -216,6 +214,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
         motModel.useUTC.toggle()
         setTimeOption(motModel.useUTC)
+   
         
     }
     
@@ -243,6 +242,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
         performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
        
+        
+        
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.text = ""
+        
     }
     
     

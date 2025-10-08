@@ -6,7 +6,7 @@
 //
 import Foundation
 
- 
+let calendar = Calendar.current
 
 //This is a method that takes a raw Date Time and Converts it to a useable String,
 
@@ -14,17 +14,55 @@ import Foundation
 
 //TOTAL FLIGHT TIME.
 
-func convertToDate(hours: Int, minutes: Int) -> Date{
+
+
+
+func timeAsStringLocal(_ timeToConvert: Date) -> String{
     
-    return Calendar.current.date(from: DateComponents(hour: Int(hours),minute: Int(minutes)))!
+    let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
+    let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
+    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+    return ("\(hoursString.hour!):\(formattedMinutes)")
+}
+
+func timeAsStringUTC(_ timeToConvert: Date) -> String{
+    
+    var calendar = Calendar.current
+    calendar.timeZone = TimeZone(identifier: "UTC")!
+    
+    let hoursString = (calendar.dateComponents([.hour], from: timeToConvert))
+    let minuteString = (calendar.dateComponents([.minute], from: timeToConvert))
+    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+    return ("\(hoursString.hour!):\(formattedMinutes)")
 }
 
 
 
 
 
+func convertToDate(hours: Int, minutes: Int) -> Date{
+    
+    return Calendar.current.date(from: DateComponents(hour: Int(hours),minute: Int(minutes)))!
+}
+
+
+func convertToInterval(TimeOject:Date) -> TimeInterval{
+    
+    let TimeConversionA = calendar.dateComponents([.hour, .minute], from: TimeOject)
+    return TimeInterval(((TimeConversionA.hour ?? 0) * 3600) + ((TimeConversionA.minute ?? 0) * 60))
+    
+}
+
+
+
+
 
 struct MOTModel{
+    
+    let calendar = Calendar.current
+    
+    
+    //TODO: Duplicate code, second function is used in the segment time totaler, It may be able to comout out of the Model
     
     var totalFlightTimeAsString :String{
         
@@ -42,7 +80,7 @@ struct MOTModel{
         return ("\(hoursString.hour!):\(formattedMinutes)")
     }
     
-    
+    var locationKnown :Bool = false
     var baseTimeZone :TimeZone = Calendar.current.timeZone
     var currentTimeZone :TimeZone = Calendar.current.timeZone // defaults to user defined
     var augmented :Bool = false
@@ -61,7 +99,7 @@ struct MOTModel{
     
     //calculated Properties
     
-    var maxDutyPerod: Date {
+    var maxDutyPeriod: Date {
         
         
         //This takes A local Duty on time and adjusts it, you may need to make another breakout
@@ -128,12 +166,14 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
         }else if tableOneLine == 1 && motModel.numberOfSegments <= 4{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            
+        }else if tableOneLine == 2 && motModel.numberOfSegments <= 4{
+            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
         }else if tableOneLine == 2 && motModel.numberOfSegments > 4{
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
-        }else if tableOneLine == 2 && motModel.numberOfSegments > 4{
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
-        }else if tableOneLine == 3 && motModel.numberOfSegments >= 4{
-            print("I belive the function exited here")
+            
+            
+        }else if tableOneLine == 3 && motModel.numberOfSegments <= 4{
             return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
         }else if tableOneLine == 3 && motModel.numberOfSegments == 5 {
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
@@ -141,6 +181,8 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
         }else if tableOneLine == 3 && motModel.numberOfSegments >= 7{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            
+            
         }else if tableOneLine == 4 && motModel.numberOfSegments <= 2{
             return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
         }else if tableOneLine == 4 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
@@ -151,6 +193,9 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
         }else if tableOneLine == 4 && motModel.numberOfSegments >= 7{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            
+            
+            
         }else if tableOneLine == 5 && motModel.numberOfSegments <= 2{
             return Calendar.current.date(from: DateComponents(hour: 14, minute: 0))!
         }else if tableOneLine == 5 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
@@ -161,6 +206,8 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
         }else if tableOneLine == 5 && motModel.numberOfSegments >= 7{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            
+            
         }else if tableOneLine == 6 && motModel.numberOfSegments <= 4{
             return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
         }else if tableOneLine == 6 && motModel.numberOfSegments == 5{
@@ -169,6 +216,7 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
         }else if tableOneLine == 6 && motModel.numberOfSegments >= 7{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            
         }else if tableOneLine == 7 && motModel.numberOfSegments <= 4{
             return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
         }else if tableOneLine == 7 && motModel.numberOfSegments == 5{
@@ -177,6 +225,8 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
         }else if tableOneLine == 7 && motModel.numberOfSegments >= 7{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            
+            
         }else if tableOneLine == 8 && motModel.numberOfSegments <= 2{
             return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
         }else if tableOneLine == 8 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
@@ -185,21 +235,54 @@ struct MOTModel{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
         }else if tableOneLine == 8 && motModel.numberOfSegments >= 6{
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            
+            
         }else if tableOneLine == 9 && motModel.numberOfSegments <= 2{
             return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
         }else if tableOneLine == 9 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
         }else if tableOneLine == 9 && motModel.numberOfSegments >= 5{
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            
+            
         }else if tableOneLine == 10 && motModel.numberOfSegments <= 3{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
         }else if tableOneLine == 10 && (motModel.numberOfSegments >= 4 && motModel.numberOfSegments <= 6){
+            
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
         }else if tableOneLine == 10 && motModel.numberOfSegments >= 7 {
             return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))!
         }
         
         return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))! // zero Value
+    }
+    
+    
+    // Duty Time Remaining
+    
+    var mustDutyOffat :Date{
+        
+        //duty on plus max duty
+        
+        return dutyOn.addingTimeInterval(convertToInterval(TimeOject: motModel.maxDutyPeriod))
+       
+        
+    }
+    
+    
+    
+    
+    
+    // Duty Time Remaining
+    
+    var dutyTimeRemaining :Date{
+        
+        //must duty off minus current time?
+        //TODO: This may need capture logic for for "Must Duty off times" that not in range.
+        
+        return motModel.mustDutyOffat - (convertToInterval(TimeOject: Date())) // THis calls a new current time.
+        
+        
     }
     
    

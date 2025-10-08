@@ -17,15 +17,23 @@ class MOTcontroller: UIViewController {
         
         numberOfSegments.text = String(motModel.numberOfSegments)
         totalFlightTIme.text = motModel.totalFlightTimeAsString
-        MaXDutyPeriodLabel.text = motModel.timeAsString(motModel.maxDutyPerod)
+        MaXDutyPeriodLabel.text = motModel.timeAsString(motModel.maxDutyPeriod)
+        MustDutyOffat.text = timeAsStringLocal(motModel.mustDutyOffat)
+        dutyTimeReminingLabel.text = timeAsStringLocal(motModel.dutyTimeRemaining)
         
-    
-        print("The Duty on time is \(motModel.dutyOn)")
+        DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
+        
         
     }
     @IBOutlet weak var numberOfSegments: UILabel!
     @IBOutlet weak var totalFlightTIme: UILabel!
     @IBOutlet weak var MaXDutyPeriodLabel: UILabel!
+    @IBOutlet weak var DutyOnLabel: UILabel!    // This may need to togel depending on UTC or local
+    @IBOutlet weak var DutyOnTime: UILabel!
+    @IBOutlet weak var MustDutyOffat: UILabel!
+    @IBOutlet weak var dutyTimeReminingLabel: UILabel!
+    @IBOutlet weak var dutyBasedMot: UILabel!
+    
     
     @IBAction func returnToMainPage(_ sender: Any) {
         

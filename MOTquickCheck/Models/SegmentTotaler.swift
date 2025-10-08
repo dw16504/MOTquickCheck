@@ -13,8 +13,6 @@ import Foundation
 
 func SegmentTotaler() -> String{
     
-    print("SegmentTotaler was called---------------")
-    
     var runningSegmentTotal = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
     
