@@ -6,7 +6,7 @@
 //
 import Foundation
 
-let calendar = Calendar.current
+var calendar = Calendar.current
 
 //This is a method that takes a raw Date Time and Converts it to a useable String,
 
@@ -14,10 +14,13 @@ let calendar = Calendar.current
 
 //TOTAL FLIGHT TIME.
 
+let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
 
 
 func timeAsStringLocal(_ timeToConvert: Date) -> String{
+    
+    print("Input date Local: \(timeToConvert)")
     
     let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
     let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
@@ -27,12 +30,20 @@ func timeAsStringLocal(_ timeToConvert: Date) -> String{
 
 func timeAsStringUTC(_ timeToConvert: Date) -> String{
     
-    var calendar = Calendar.current
-    calendar.timeZone = TimeZone(identifier: "UTC")!
+    print("Input date UTC: \(timeToConvert)")
     
-    let hoursString = (calendar.dateComponents([.hour], from: timeToConvert))
-    let minuteString = (calendar.dateComponents([.minute], from: timeToConvert))
-    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+    let calendar = Calendar(identifier: .gregorian)
+    var utcCalendar = calendar
+    utcCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    
+    
+   
+    //var calendar = Calendar.current
+    //calendar.timeZone = TimeZone(identifier: "UTC")!
+    let hoursString = (utcCalendar.dateComponents([.hour], from: timeToConvert))
+    let minuteString = (utcCalendar.dateComponents([.minute], from: timeToConvert))
+    
+    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? 0 )
     return ("\(hoursString.hour!):\(formattedMinutes)")
 }
 
@@ -41,6 +52,12 @@ func timeAsStringUTC(_ timeToConvert: Date) -> String{
 
 
 func convertToDate(hours: Int, minutes: Int) -> Date{
+    
+    // TODO: So here's the deal, we should probably use time intervals to adjust the time objects, not a date.
+    // When not assigning anythong but hours and minutes, it defauts to 24 minutes which screws up the conversion.
+    // setting the unused part of the date to somthing besides entry seems to make this work arround.
+    
+    //starting to dount this, it fixed it in playground but not in app... needs more work.
     
     return Calendar.current.date(from: DateComponents(hour: Int(hours),minute: Int(minutes)))!
 }
@@ -80,6 +97,8 @@ struct MOTModel{
         return ("\(hoursString.hour!):\(formattedMinutes)")
     }
     
+    
+    var currentTime :Date = Date()
     var locationKnown :Bool = false
     var baseTimeZone :TimeZone = Calendar.current.timeZone
     var currentTimeZone :TimeZone = Calendar.current.timeZone // defaults to user defined
@@ -92,8 +111,8 @@ struct MOTModel{
     var reserveStart :Date = Date() //TAG 2
     var dutyOn :Date = Date() //TAG 3
     var actualBlockOut :Date = Date() //TAG 4
-    var projcetedBlock :Date = Date() //TAG 5
-    var buffer :Date = Date() //TAG 6
+    var projcetedBlock :Date = zeroValueTime //TAG 5
+    var buffer :Date = zeroValueTime //TAG 6
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
     
@@ -119,9 +138,6 @@ struct MOTModel{
             
         }
         
-        print("At the begining od the logic check: dutyOn is \(motModel.timeAsString(motModel.dutyOn))")
-        
-       
         
         if (dutyTableEntryTime! >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 03, minutes: 59){
             //0000 - 0359 Local
@@ -157,15 +173,13 @@ struct MOTModel{
             tableOneLine = 0
         }
         
-       
         
         // Logic for Columns in table 1-8
         
         
         if tableOneLine == 1{
+        
             return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
-        }else if tableOneLine == 1 && motModel.numberOfSegments <= 4{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
             
         }else if tableOneLine == 2 && motModel.numberOfSegments <= 4{
             return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
@@ -285,7 +299,37 @@ struct MOTModel{
         
     }
     
-   
+    
+    // Duty Based MOT:
+    //Must Duty Off at - Projected Block - buffer
+    var dutyBasedMOT : Date{
+        
+        let projectedBlockInteral = -(convertToInterval(TimeOject: motModel.projcetedBlock))
+        let bufferInterval = -(convertToInterval(TimeOject: motModel.buffer))
+        
+        return (motModel.mustDutyOffat.addingTimeInterval(projectedBlockInteral)).addingTimeInterval(bufferInterval)
+    }
+    
+    //Max FLight Time
+    //Determined From aclimated report time
+    var maxFligtTIme :Date{
+        
+        if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59)){
+            // 0000 - 0459 8 hours Max flight
+            return convertToDate(hours: 9, minutes: 0)
+        }else{
+            return convertToDate(hours: 8, minutes: 0)
+        }
+    }
+    
+    //flight time Remaining
+    //Max flight time less (-) totalFLight time
+    
+    var flightTimeRemaining :Date{
+        
+        let totalFlightTimeAsInterval = -(convertToInterval(TimeOject: motModel.totalFlightTime!))
+        return motModel.maxFligtTIme.addingTimeInterval(totalFlightTimeAsInterval)
+    }
     
 }
 

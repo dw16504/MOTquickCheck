@@ -15,7 +15,7 @@ var companyPurple = (hex:"#551cc7",rgb:"rgb(85, 28, 199)")
 
 
 var motModel = MOTModel()
-var currentTimeDate: Date =  Date()
+//var currentTimeDate: Date =  Date()
 let responseDateFormater = DateFormatter()
 
 
@@ -125,7 +125,8 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         setupTextField(targetField: bufferEntry)
         
         responseDateFormater.dateFormat = "HH:mm"
-        currentTime.text = responseDateFormater.string(from: currentTimeDate)
+        //currentTime.text = responseDateFormater.string(from: currentTimeDate)
+        currentTime.text = timeAsStringLocal(motModel.currentTime)
         
         numberOFSegmentsLabel.text = String(motModel.numberOfSegments)
         
@@ -239,11 +240,9 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
    // Action that goes to MOTController
     @IBAction func MOTselector(_ sender: Any) {
-    
-        performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
+            motModel.currentTime = Date()  //reset Current Time before segue
+            performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
        
-        
-        
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -273,7 +272,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             case 4:
                 motModel.actualBlockOut = responseX
             case 5:
-                motModel.actualBlockOut = responseX
+                motModel.projcetedBlock = responseX
             case 6:
                 motModel.buffer = responseX
             default:
@@ -297,14 +296,14 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             timeSelectorLabel.text = "Local Time"
             currentTimeLabel.text = responseDateFormater.timeZone.description
             
-            currentTime.text = responseDateFormater.string(from: currentTimeDate)
+            currentTime.text = responseDateFormater.string(from: motModel.currentTime)
             
         }else{
             responseDateFormater.timeZone = TimeZone(abbreviation: "UTC")
             timeSelectorLabel.text = "UTC"
             currentTimeLabel.text = "Time UTC:"
             
-            currentTime.text = responseDateFormater.string(from: currentTimeDate)
+            currentTime.text = responseDateFormater.string(from: motModel.currentTime)
         }
     }
     
