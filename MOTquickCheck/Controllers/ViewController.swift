@@ -258,23 +258,35 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     func textFieldDidEndEditing(_ textField: UITextField){
         
         do{
-            let responseX = try timeValidator(stringInput: textField.text ?? "")
-            responseDateFormater.dateFormat = "HH:mm"
-            let stringEntered = (responseDateFormater.string(from: responseX))
-          
+            
+            var responseX :Date = Date()  //Make these better defaults
+            var responseY :TimeInterval = 3600.01 // make these better defaults
+            var stringEntered = "Validator Error"
+            
+            if textField.tag <= 4{
+                responseX = try timeValidator(stringInput: textField.text ?? "")
+                responseDateFormater.dateFormat = "HH:mm"
+                stringEntered = (responseDateFormater.string(from: responseX))
+            }else if textField.tag > 4{
+                responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
+                //responseDateFormater.dateFormat = "HH:mm"
+                stringEntered = "Fix This"
+                //TODO: interval login goes here
+                
+            }
             
             switch textField.tag{
                 
             case 2:
-                motModel.reserveStart = responseX
+                motModel.reserveStart = responseX //Date
             case 3:
-                motModel.dutyOn = responseX
+                motModel.dutyOn = responseX //Date
             case 4:
-                motModel.actualBlockOut = responseX
+                motModel.actualBlockOut = responseX  //Date
             case 5:
-                motModel.projcetedBlock = responseX
+                motModel.projcetedBlock = responseY //Interval
             case 6:
-                motModel.buffer = responseX
+                motModel.taxiIn = responseY //Interval
             default:
                 print("Error: no update was made in the DidEndEditing Switch statement")
                 

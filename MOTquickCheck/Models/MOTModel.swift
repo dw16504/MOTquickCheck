@@ -18,9 +18,10 @@ let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
 
 
+//MARK: - ConversionFunctions:
+
 func timeAsStringLocal(_ timeToConvert: Date) -> String{
-    
-    print("Input date Local: \(timeToConvert)")
+  
     
     let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
     let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
@@ -29,9 +30,7 @@ func timeAsStringLocal(_ timeToConvert: Date) -> String{
 }
 
 func timeAsStringUTC(_ timeToConvert: Date) -> String{
-    
-    print("Input date UTC: \(timeToConvert)")
-    
+ 
     let calendar = Calendar(identifier: .gregorian)
     var utcCalendar = calendar
     utcCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
@@ -47,19 +46,32 @@ func timeAsStringUTC(_ timeToConvert: Date) -> String{
     return ("\(hoursString.hour!):\(formattedMinutes)")
 }
 
+func intervalAsString(_ timeToConvert: TimeInterval) -> String{
+    
+    print("The value received for time interval is: \(timeToConvert)")
+    
+    
+    let minutes = Int(timeToConvert.remainder(dividingBy: 3600)/60)
+    let hours = Int(timeToConvert / 3600)
+    
+    let formattedHours = String(format: "%02d", hours)
+    let formattedMinutes = String(format: "%02d",  minutes )
+    
+    return ("\(formattedHours):\(formattedMinutes)")
+}
 
 
 
 
 func convertToDate(hours: Int, minutes: Int) -> Date{
+    // This is one of three places that assign a date to a time object, it pulls a new time object
+    // This seems bug prone to me.
     
-    // TODO: So here's the deal, we should probably use time intervals to adjust the time objects, not a date.
-    // When not assigning anythong but hours and minutes, it defauts to 24 minutes which screws up the conversion.
-    // setting the unused part of the date to somthing besides entry seems to make this work arround.
-    
-    //starting to dount this, it fixed it in playground but not in app... needs more work.
-    
-    return Calendar.current.date(from: DateComponents(hour: Int(hours),minute: Int(minutes)))!
+    let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
+    return Calendar.current.date(from: DateComponents(year: components.year,
+                                                      month: components.month,
+                                                      day: components.day,
+                                                      hour: Int(hours),minute: Int(minutes)))!
 }
 
 
@@ -76,7 +88,10 @@ func convertToInterval(TimeOject:Date) -> TimeInterval{
 
 struct MOTModel{
     
-    let calendar = Calendar.current
+    
+    
+    //let calendar = Calendar.current
+    let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     
     
     //TODO: Duplicate code, second function is used in the segment time totaler, It may be able to comout out of the Model
@@ -111,21 +126,24 @@ struct MOTModel{
     var reserveStart :Date = Date() //TAG 2
     var dutyOn :Date = Date() //TAG 3
     var actualBlockOut :Date = Date() //TAG 4
-    var projcetedBlock :Date = zeroValueTime //TAG 5
-    var buffer :Date = zeroValueTime //TAG 6
+    var projcetedBlock :TimeInterval = 0 //TAG 5
+    var taxiIn :TimeInterval = 0 //TAG 6
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
     
     
     //calculated Properties
     
-    var maxDutyPeriod: Date {
+    var maxDutyPeriod: TimeInterval {
         
-        
-        //This takes A local Duty on time and adjusts it, you may need to make another breakout
-        //that checks for use of UTC time.
+        // This is one of three places that assign a date to a time object, it pulls a new time object
+        // This seems bug prone to me.
         
         var tableOneLine = 1
-        var dutyTableEntryTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
+        var dutyTableEntryTime = Calendar.current.date(from: DateComponents(year: components.year,
+                                                                            month:components.month,
+                                                                            day: components.day,
+                                                                            hour: 0,
+                                                                            minute: 0))
         var deltaTime = 0.0
         
         if motModel.currentTimeZone == motModel.baseTimeZone {
@@ -179,107 +197,156 @@ struct MOTModel{
         
         if tableOneLine == 1{
         
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            return (9 * 3600) + (0 * 60) as TimeInterval
             
         }else if tableOneLine == 2 && motModel.numberOfSegments <= 4{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            return (10 * 3600) + (0 * 60) as TimeInterval
         }else if tableOneLine == 2 && motModel.numberOfSegments > 4{
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
-            
+            //return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            return (9 * 3600) + (0 * 60) as TimeInterval
             
         }else if tableOneLine == 3 && motModel.numberOfSegments <= 4{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
+
         }else if tableOneLine == 3 && motModel.numberOfSegments == 5 {
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
-        }else if tableOneLine == 3 && motModel.numberOfSegments == 6{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
-        }else if tableOneLine == 3 && motModel.numberOfSegments >= 7{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            return (11 * 3600) + (30 * 60) as TimeInterval
             
+        }else if tableOneLine == 3 && motModel.numberOfSegments == 6{
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            return (11 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 3 && motModel.numberOfSegments >= 7{
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            return (10 * 3600) + (30 * 60) as TimeInterval
             
         }else if tableOneLine == 4 && motModel.numberOfSegments <= 2{
-            return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
+            return (13 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 4 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 4 && motModel.numberOfSegments == 5{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            return (11 * 3600) + (30 * 60) as TimeInterval
+            
         }else if tableOneLine == 4 && motModel.numberOfSegments == 6{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            return (11 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 4 && motModel.numberOfSegments >= 7{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
-            
-            
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            return (10 * 3600) + (30 * 60) as TimeInterval
             
         }else if tableOneLine == 5 && motModel.numberOfSegments <= 2{
-            return Calendar.current.date(from: DateComponents(hour: 14, minute: 0))!
-        }else if tableOneLine == 5 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
-            return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
-        }else if tableOneLine == 5 && motModel.numberOfSegments == 5{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 30))!
-        }else if tableOneLine == 5 && motModel.numberOfSegments == 6{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
-        }else if tableOneLine == 5 && motModel.numberOfSegments >= 7{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 14, minute: 0))!
+            return (14 * 3600) + (0 * 60) as TimeInterval
             
+        }else if tableOneLine == 5 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
+            //return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
+            return (13 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 5 && motModel.numberOfSegments == 5{
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 30))!
+            return (12 * 3600) + (30 * 60) as TimeInterval
+            
+        }else if tableOneLine == 5 && motModel.numberOfSegments == 6{
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 5 && motModel.numberOfSegments >= 7{
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            return (11 * 3600) + (30 * 60) as TimeInterval
             
         }else if tableOneLine == 6 && motModel.numberOfSegments <= 4{
-            return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 13, minute: 0))!
+            return (13 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 6 && motModel.numberOfSegments == 5{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 30))!
+            return (12 * 3600) + (30 * 60) as TimeInterval
+            
         }else if tableOneLine == 6 && motModel.numberOfSegments == 6{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 6 && motModel.numberOfSegments >= 7{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            return (11 * 3600) + (30 * 60) as TimeInterval
             
         }else if tableOneLine == 7 && motModel.numberOfSegments <= 4{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
-        }else if tableOneLine == 7 && motModel.numberOfSegments == 5{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
-        }else if tableOneLine == 7 && motModel.numberOfSegments == 6{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
-        }else if tableOneLine == 7 && motModel.numberOfSegments >= 7{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
             
+        }else if tableOneLine == 7 && motModel.numberOfSegments == 5{
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 30))!
+            return (11 * 3600) + (30 * 60) as TimeInterval
+            
+        }else if tableOneLine == 7 && motModel.numberOfSegments == 6{
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            return (10 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 7 && motModel.numberOfSegments >= 7{
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 30))!
+            return (10 * 3600) + (30 * 60) as TimeInterval
             
         }else if tableOneLine == 8 && motModel.numberOfSegments <= 2{
-            return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
-        }else if tableOneLine == 8 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
-        }else if tableOneLine == 8 && motModel.numberOfSegments == 5{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
-        }else if tableOneLine == 8 && motModel.numberOfSegments >= 6{
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 12, minute: 0))!
+            return (12 * 3600) + (0 * 60) as TimeInterval
             
+        }else if tableOneLine == 8 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            return (11 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 8 && motModel.numberOfSegments == 5{
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            return (10 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 8 && motModel.numberOfSegments >= 6{
+            //return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            return (9 * 3600) + (0 * 60) as TimeInterval
             
         }else if tableOneLine == 9 && motModel.numberOfSegments <= 2{
-            return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
-        }else if tableOneLine == 9 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
-        }else if tableOneLine == 9 && motModel.numberOfSegments >= 5{
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 11, minute: 0))!
+            return (11 * 3600) + (0 * 60) as TimeInterval
             
+        }else if tableOneLine == 9 && (motModel.numberOfSegments >= 3 && motModel.numberOfSegments <= 4){
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            return (10 * 3600) + (0 * 60) as TimeInterval
+            
+        }else if tableOneLine == 9 && motModel.numberOfSegments >= 5{
+            //return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            return (9 * 3600) + (0 * 60) as TimeInterval
             
         }else if tableOneLine == 10 && motModel.numberOfSegments <= 3{
-            return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
-        }else if tableOneLine == 10 && (motModel.numberOfSegments >= 4 && motModel.numberOfSegments <= 6){
+            //return Calendar.current.date(from: DateComponents(hour: 10, minute: 0))!
+            return (10 * 3600) + (0 * 60) as TimeInterval
             
-            return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+        }else if tableOneLine == 10 && (motModel.numberOfSegments >= 4 && motModel.numberOfSegments <= 6){
+            //return Calendar.current.date(from: DateComponents(hour: 9, minute: 0))!
+            return (9 * 3600) + (0 * 60) as TimeInterval
+            
         }else if tableOneLine == 10 && motModel.numberOfSegments >= 7 {
-            return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))!
+            //return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))!
+            return (0 * 3600) + (0 * 60) as TimeInterval
         }
         
-        return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))! // zero Value
+        //return Calendar.current.date(from: DateComponents(hour: 0, minute: 0))! // zero Value
+        return (0 * 3600) + (0 * 60) as TimeInterval // zero valu default
     }
+    
     
     
     // Duty Time Remaining
     
     var mustDutyOffat :Date{
-        
         //duty on plus max duty
-        
-        return dutyOn.addingTimeInterval(convertToInterval(TimeOject: motModel.maxDutyPeriod))
-       
+        return dutyOn.addingTimeInterval(maxDutyPeriod)
         
     }
     
@@ -294,20 +361,21 @@ struct MOTModel{
         //must duty off minus current time?
         //TODO: This may need capture logic for for "Must Duty off times" that not in range.
         
-        return motModel.mustDutyOffat - (convertToInterval(TimeOject: Date())) // THis calls a new current time.
+        return motModel.mustDutyOffat - (convertToInterval(TimeOject: Date())) // IMPORTANT: This calls a new current time.
         
         
     }
     
-    
+    //MARK: TODO fix this for intervals
     // Duty Based MOT:
-    //Must Duty Off at - Projected Block - buffer
-    var dutyBasedMOT : Date{
+    //Must Duty Off at(date) - Projected Block(interval) - TaxiIn(interval)
+    var dutyBasedMOT :Date{
         
-        let projectedBlockInteral = -(convertToInterval(TimeOject: motModel.projcetedBlock))
-        let bufferInterval = -(convertToInterval(TimeOject: motModel.buffer))
-        
-        return (motModel.mustDutyOffat.addingTimeInterval(projectedBlockInteral)).addingTimeInterval(bufferInterval)
+        //let projectedBlockInterval = -(convertToInterval(TimeOject: motModel.projcetedBlock))
+        let projectedBlockInterval = -motModel.projcetedBlock
+        //let bufferInterval = -(convertToInterval(TimeOject: motModel.buffer))
+        let bufferInterval = -motModel.taxiIn
+        return (motModel.mustDutyOffat.addingTimeInterval(projectedBlockInterval)).addingTimeInterval(bufferInterval)
     }
     
     //Max FLight Time

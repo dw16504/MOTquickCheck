@@ -19,14 +19,12 @@ class MOTcontroller: UIViewController {
         currentTimeLabel.text = timeAsStringLocal(motModel.currentTime)
         numberOfSegments.text = String(motModel.numberOfSegments)
         totalFlightTIme.text = motModel.totalFlightTimeAsString
-        MaXDutyPeriodLabel.text = motModel.timeAsString(motModel.maxDutyPeriod)
-        
-        print("The value being sent to must duty off at is \(motModel.mustDutyOffat)")
+        MaXDutyPeriodLabel.text = intervalAsString(motModel.maxDutyPeriod)
         MustDutyOffat.text = timeAsStringLocal(motModel.mustDutyOffat)
         dutyTimeReminingLabel.text = timeAsStringLocal(motModel.dutyTimeRemaining)
         maxFlightTimeLabel.text = timeAsStringLocal(motModel.maxFligtTIme)
         flightTimeRemainingLablel.text = timeAsStringLocal(motModel.flightTimeRemaining)
-        dutyBasedMot.text = timeAsStringLocal(motModel.dutyBasedMOT)
+        dutyBasedMot.text = timeAsStringUTC(motModel.dutyBasedMOT)
         
         
         DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
