@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
                 motModel.currentTimeZone = placemark.timeZone!
             }else{
                 print("ERROR 2: Unable to assign timezone to placemark")
-                print(error)
+                print(error as Any)
             }
         }
     }
@@ -112,10 +112,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         dutyOnEntry.delegate = self
         setupTextField(targetField: dutyOnEntry)
         
-        // TAG 4
-        actualBlockOutEntry.delegate = self
-        setupTextField(targetField: actualBlockOutEntry)
-        
         //TAG 5
         projectedBlockEntry.delegate = self
         setupTextField(targetField: projectedBlockEntry)
@@ -154,7 +150,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     @IBOutlet weak var AugmentedLabel: UILabel!
     
     @IBAction func AugmentedSelector(_ sender: UISwitch) {
-        
+    
         motModel.augmented.toggle()
         
         if motModel.augmented == true{
@@ -163,20 +159,27 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             AugmentedLabel.text = "Un-Augmented"
         }
         
+    }
+    
+    @IBOutlet weak var AugmentedOutlet: UISwitch!
+    
+    func SetAugmentedLabel(){
+        
+        
         
     }
     
+    
     @IBAction func restFaciitySelector(_ sender: UISegmentedControl) {
-        print("The segment was changed to \(sender.selectedSegmentIndex+1)")
-        
         motModel.restFacility = sender.selectedSegmentIndex+1
-        
-        
     }
   
+    @IBOutlet weak var restFacilityOutlet: UISegmentedControl!
     
     
     @IBOutlet weak var AclimatedLabel: UILabel!
+    
+    @IBOutlet weak var AclimatedSwitchOutlet: UISwitch!
     @IBAction func AclimatedToggel(_ sender: UISwitch) {
         
         motModel.aclimated.toggle()
@@ -191,16 +194,24 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
   
     
     @IBOutlet weak var lineHolderLabel: UILabel!
+    
+    @IBOutlet weak var lineHolderSwitchOutlet: UISwitch!
     @IBAction func LineHolderToggel(_ sender: Any) {
         
         motModel.lineHolder.toggle()
+        setReserveCondition()
         
+    }
+    
+    func setReserveCondition(){
         
         if motModel.lineHolder == true{
             ReserveStartLabel.textColor = .systemGray4
             ReserveStartEntry.isEnabled = false
             ReserveStartEntry.textColor = .systemGray4
             lineHolderLabel.text = "Line Holder"
+            motModel.reserveStart = zeroValueTime
+            ReserveStartEntry.text = timeAsStringLocal(motModel.reserveStart)
             
         }else{
             ReserveStartLabel.textColor = .systemGray
@@ -208,16 +219,18 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             ReserveStartEntry.textColor = .systemGray
             lineHolderLabel.text = "Reserve"
         }
-        
     }
     
+    
     @IBAction func useUTCSelector(_ sender: UISwitch) {
-        
         motModel.useUTC.toggle()
         setTimeOption(motModel.useUTC)
-   
-        
     }
+    
+    
+    
+    @IBOutlet weak var useUTCSelectorOutlet: UISwitch!
+    
     
     @IBOutlet weak var timeSelectorLabel: UILabel!
     
@@ -231,8 +244,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
     @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG 3
     
-    @IBOutlet weak var actualBlockOutEntry: UITextField! //set to TAG 4
-    
     @IBOutlet weak var projectedBlockEntry: UITextField! // set to TAG 5
     
     @IBOutlet weak var bufferEntry: UITextField! // set to TAG 6
@@ -244,6 +255,60 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
        
     }
+    
+    // Action to reset Data
+    @IBAction func ResetButton(_ sender: UIButton) {
+        
+        motModel.numberOfSegments = 1
+        segmentDataSource.removeAll()
+        
+        DispatchQueue.main.async {
+            self.totalFlightTImeLabel.text = motModel.totalFlightTimeAsString
+        }
+        
+        
+        numberOFSegmentsLabel.text = String(motModel.numberOfSegments)
+        motModel.totalFlightTime = zeroValueTime
+        
+        motModel.augmented = false
+        AugmentedOutlet.isOn = false
+        AugmentedLabel.text = "Un-Augmented"
+        
+        
+        motModel.restFacility = 1
+        restFacilityOutlet.selectedSegmentIndex = 0
+        
+        motModel.aclimated = true
+        AclimatedSwitchOutlet.isOn = false
+        AclimatedLabel.text = "Aclimated to Base"
+        
+        motModel.lineHolder = false
+        lineHolderSwitchOutlet.isOn = false
+        setReserveCondition()
+        
+        motModel.useUTC = false
+        useUTCSelectorOutlet.isOn = false
+        setTimeOption(false)
+        
+        motModel.reserveStart = zeroValueTime
+        ReserveStartEntry.text = timeAsStringLocal(motModel.reserveStart)
+        
+        motModel.dutyOn = zeroValueTime
+        dutyOnEntry.text = timeAsStringLocal(motModel.dutyOn)
+        
+        motModel.projcetedBlock = TimeInterval(0.0)
+        projectedBlockEntry.text = intervalAsString(motModel.projcetedBlock)
+        
+        motModel.taxiIn = TimeInterval(0.0)
+        bufferEntry.text = intervalAsString(motModel.taxiIn)
+    
+        
+        //MARK: Pickup building
+        
+        
+        
+    }
+    
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.text = ""
@@ -270,8 +335,8 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             }else if textField.tag > 4{
                 responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
                 //responseDateFormater.dateFormat = "HH:mm"
-                stringEntered = "Fix This"
-                //TODO: interval login goes here
+                stringEntered = intervalAsString(responseY)
+                //TODO: interval logic goes here
                 
             }
             

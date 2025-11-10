@@ -20,8 +20,6 @@ protocol SegmentListDelegate: AnyObject {
 func addSegment(){
     
     segmentDataSource.append(SegmentModel(isFocused: true, isErrored: false, segmentNumber: 1, segmentDescription: "Flight \(segmentDataSource.count+1)", segmentTimeAsAString: "BLK Time", segmentColor: UIColor.lightGray, segmentInSeconds: 0, segmentTime: nil))
-    
-   
 }
 
 
@@ -30,6 +28,7 @@ class SegmentListController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentTotalLabel: UILabel?
+    @IBOutlet weak var numberOfSegmentsLabel: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
     
     weak var delegate: SegmentListDelegate?
@@ -45,6 +44,8 @@ class SegmentListController: UIViewController {
         errorLabel.text = ""
         segmentTotalLabel!.text = motModel.timeAsString(motModel.totalFlightTime!)
         
+        numberOfSegmentsLabel.text = String(motModel.numberOfSegments)
+        
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -58,16 +59,8 @@ class SegmentListController: UIViewController {
     
     
     @IBAction func Return(_ sender: UIButton) {
-        
-        // Pressing the back button stores the data in the model.
     
-        motModel.numberOfSegments = segmentDataSource.count
-        
-        print("THe Exit Button Was pressed")
-        print("The number of segments in the model is: \(motModel.numberOfSegments)")
-        
-        
-        // This is trying to use the Delegate method.
+        motModel.numberOfSegments = segmentDataSource.count + 1
         delegate?.didUpdateValue(motModel)
         
         self.dismiss(animated: true)
@@ -81,7 +74,6 @@ class SegmentListController: UIViewController {
     }
     
     @IBAction func ClearAll(_ sender: UIButton) {
-        print("Clear All Pressed")
         segmentDataSource.removeAll()
         tableView.reloadData()
     }
@@ -232,6 +224,8 @@ extension SegmentListController: UITextFieldDelegate {
             try segmentTimeValidator(input:textField.text!, segment: textField.tag)
             
             segmentTotalLabel!.text = SegmentTotaler()
+            
+            numberOfSegmentsLabel.text = String(segmentDataSource.count + 1)
             tableView.reloadData()
             
         }catch segmentEntryError.entryTooLong(let atSegment, let errorDescription){

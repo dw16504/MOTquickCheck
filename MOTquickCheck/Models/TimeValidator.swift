@@ -58,25 +58,13 @@ func timeValidator(stringInput: String) throws -> Date {
     }else{
         hoursEntry = String(stringInput[stringInput.startIndex])
     }
-    
-    // This is one of three places that assign a date to a time object, it pulls a new time object
-    // This seems bug prone to me.
+   
     
     let returnTime = Calendar.current.date(from: DateComponents(year: components.year,
                                                                 month: components.month,
                                                                 day: components.day,
                                                                 hour: Int(hoursEntry),
                                                                 minute: Int(minutesEntry)))!
-    
-    
-    
-    
-    
-    //let returnTimeInSeconds = ((((Int(hoursEntry) ?? 0) * 60 * 60)) + (Int(minutesEntry)! * 60))
-    
-    
-    print("The Time entered is: \(hoursEntry):\(minutesEntry)")
-    //print("The present year is \(motModel.calendar.)")
     
     return returnTime
     

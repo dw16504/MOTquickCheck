@@ -8,11 +8,6 @@ import Foundation
 
 var calendar = Calendar.current
 
-//This is a method that takes a raw Date Time and Converts it to a useable String,
-
-//TODO: GIVE THIS FUNCTION AN INPUT PARAMETER THAT WILL RETURN ANY TIME VALUE IN THE MODEL AS A STRING INSTEAD OF JUST
-
-//TOTAL FLIGHT TIME.
 
 let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
@@ -48,17 +43,11 @@ func timeAsStringUTC(_ timeToConvert: Date) -> String{
 
 func intervalAsString(_ timeToConvert: TimeInterval) -> String{
     
-    print("The value received for time interval is: \(timeToConvert)")
-    
-    
-    let minutes = Int(timeToConvert.remainder(dividingBy: 3600)/60)
-    let hours = Int(timeToConvert / 3600)
-    
-    let formattedHours = String(format: "%02d", hours)
-    let formattedMinutes = String(format: "%02d",  minutes )
-    
-    return ("\(formattedHours):\(formattedMinutes)")
-}
+        let totalSeconds = Int(timeToConvert.rounded())      // avoid fractional-second quirks
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60 // 0...59
+
+        return String(format: "%02d:%02d", hours, minutes)}
 
 
 
@@ -123,20 +112,32 @@ struct MOTModel{
     var lineHolder :Bool = false
     var useUTC :Bool = false
     var numberOfSegments: Int = 1
-    var reserveStart :Date = Date() //TAG 2
-    var dutyOn :Date = Date() //TAG 3
-    var actualBlockOut :Date = Date() //TAG 4
+    var reserveStart :Date = zeroValueTime //TAG 2
+    var dutyOn :Date = zeroValueTime //TAG 3
+    var actualBlockOut :Date = zeroValueTime //TAG 4
     var projcetedBlock :TimeInterval = 0 //TAG 5
     var taxiIn :TimeInterval = 0 //TAG 6
     var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
+    // I think this needs to be changed to an interval.
+    
+    
+    // This is redundant, it was eaier to include clearing of the data model on the view controller, so this will need to
+    // be checked and cleaned up.
+    mutating func restoreMOTDefaults(){
+        
+        
+        //THese need to be addressed.
+        numberOfSegments = 1
+        totalFlightTime = zeroValueTime
+        
+    }
+    
     
     
     //calculated Properties
     
     var maxDutyPeriod: TimeInterval {
         
-        // This is one of three places that assign a date to a time object, it pulls a new time object
-        // This seems bug prone to me.
         
         var tableOneLine = 1
         var dutyTableEntryTime = Calendar.current.date(from: DateComponents(year: components.year,
