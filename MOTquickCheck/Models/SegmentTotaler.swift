@@ -11,28 +11,49 @@ import Foundation
 //Label as well as the MOT Model.
 
 
-func SegmentTotaler() -> String{
+//func SegmentTotaler() -> String{
+//    
+//    var runningSegmentTotal = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
+//    
+//    
+//    for item in segmentDataSource{
+//        runningSegmentTotal = runningSegmentTotal?.addingTimeInterval(TimeInterval(item.segmentInSeconds))
+//        print ("\(item.segmentDescription)  ", terminator: "")
+//        print ("\(item.segmentTimeAsAString)  ", terminator: "")
+//        print (item.segmentInSeconds)
+//        
+//        motModel.totalFlightTime = runningSegmentTotal
+//        
+//    }
+//    
+//    
+//    // !!! TODO: I belive this may be able to transfter to a function in the model (This is duplicate code)
+//    
+//    let hoursString = (Calendar.current.dateComponents([.hour], from: runningSegmentTotal!))
+//    let minuteString = (Calendar.current.dateComponents([.minute], from: runningSegmentTotal!))
+//    
+//    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+//    
+//    //return ("\(hoursString.hour!):\(minuteString.minute!)")
+//    return ("\(hoursString.hour!):\(formattedMinutes)")}
+//
+
+//This is a revision of the above function to change it from a dataTime object to a time interval
+
+func SegmentTotalerInterval() -> String{
     
-    var runningSegmentTotal = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
+    var runningSegmentTotal = TimeInterval(0.0)
     
     
     for item in segmentDataSource{
-        runningSegmentTotal = runningSegmentTotal?.addingTimeInterval(TimeInterval(item.segmentInSeconds))
+        
+        runningSegmentTotal = runningSegmentTotal + Double(item.segmentInSeconds)
         print ("\(item.segmentDescription)  ", terminator: "")
         print ("\(item.segmentTimeAsAString)  ", terminator: "")
         print (item.segmentInSeconds)
         
-        motModel.totalFlightTime = runningSegmentTotal
+        motModel.totalFlightTimeAsInterval = runningSegmentTotal
         
     }
-    
-    
-    // !!! TODO: I belive this may be able to transfter to a function in the model (This is duplicate code)
-    
-    let hoursString = (Calendar.current.dateComponents([.hour], from: runningSegmentTotal!))
-    let minuteString = (Calendar.current.dateComponents([.minute], from: runningSegmentTotal!))
-    
-    let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
-    
-    //return ("\(hoursString.hour!):\(minuteString.minute!)")
-    return ("\(hoursString.hour!):\(formattedMinutes)")}
+    return intervalAsString(motModel.totalFlightTimeAsInterval)
+}

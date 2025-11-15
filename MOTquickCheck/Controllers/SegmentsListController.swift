@@ -42,16 +42,13 @@ class SegmentListController: UIViewController {
         addSegment()
         
         errorLabel.text = ""
-        segmentTotalLabel!.text = motModel.timeAsString(motModel.totalFlightTime!)
+        //segmentTotalLabel!.text = motModel.timeAsString(motModel.totalFlightTime!)
+        segmentTotalLabel!.text = intervalAsString(motModel.totalFlightTimeAsInterval)
         
         numberOfSegmentsLabel.text = String(motModel.numberOfSegments)
         
         tableView.dataSource = self
         tableView.delegate = self
-        
-        
-        
-        
         
         
         
@@ -223,7 +220,7 @@ extension SegmentListController: UITextFieldDelegate {
         do{
             try segmentTimeValidator(input:textField.text!, segment: textField.tag)
             
-            segmentTotalLabel!.text = SegmentTotaler()
+            segmentTotalLabel!.text = SegmentTotalerInterval()
             
             numberOfSegmentsLabel.text = String(segmentDataSource.count + 1)
             tableView.reloadData()

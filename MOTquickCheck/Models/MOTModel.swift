@@ -85,13 +85,13 @@ struct MOTModel{
     
     //TODO: Duplicate code, second function is used in the segment time totaler, It may be able to comout out of the Model
     
-    var totalFlightTimeAsString :String{
-        
-        let hoursString = (Calendar.current.dateComponents([.hour], from: totalFlightTime!))
-        let minuteString = (Calendar.current.dateComponents([.minute], from: totalFlightTime!))
-        let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
-        return ("\(hoursString.hour!):\(formattedMinutes)")
-    }
+//    var totalFlightTimeAsString :String{
+//        
+//        let hoursString = (Calendar.current.dateComponents([.hour], from: totalFlightTime!))
+//        let minuteString = (Calendar.current.dateComponents([.minute], from: totalFlightTime!))
+//        let formattedMinutes = String(format: "%02d",  minuteString.minute ?? "00" )
+//        return ("\(hoursString.hour!):\(formattedMinutes)")
+//    }
     
     func timeAsString(_ timeToConvert: Date) -> String{
         
@@ -117,20 +117,9 @@ struct MOTModel{
     var actualBlockOut :Date = zeroValueTime //TAG 4
     var projcetedBlock :TimeInterval = 0 //TAG 5
     var taxiIn :TimeInterval = 0 //TAG 6
-    var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0))
-    // I think this needs to be changed to an interval.
-    
-    
-    // This is redundant, it was eaier to include clearing of the data model on the view controller, so this will need to
-    // be checked and cleaned up.
-    mutating func restoreMOTDefaults(){
-        
-        
-        //THese need to be addressed.
-        numberOfSegments = 1
-        totalFlightTime = zeroValueTime
-        
-    }
+    var totalFlightTimeAsInterval: TimeInterval = 0.0
+    //var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0)) // may be onsolete.
+
     
     
     
@@ -381,24 +370,25 @@ struct MOTModel{
     
     //Max FLight Time
     //Determined From aclimated report time
-    var maxFligtTIme :Date{
+    var maxFligtTIme :TimeInterval{
         
         if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59)){
             // 0000 - 0459 8 hours Max flight
-            return convertToDate(hours: 9, minutes: 0)
+            return TimeInterval(9 * 3600)
         }else{
-            return convertToDate(hours: 8, minutes: 0)
+            return TimeInterval(8 * 3600)
         }
     }
     
     //flight time Remaining
     //Max flight time less (-) totalFLight time
     
-    var flightTimeRemaining :Date{
+    var flightTimeRemaining :TimeInterval{
         
-        let totalFlightTimeAsInterval = -(convertToInterval(TimeOject: motModel.totalFlightTime!))
-        return motModel.maxFligtTIme.addingTimeInterval(totalFlightTimeAsInterval)
+        return maxFligtTIme - totalFlightTimeAsInterval - projcetedBlock - taxiIn
     }
+    
+
     
 }
 

@@ -25,11 +25,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     let geocoder = CLGeocoder()
     
     
+    //stuff that happens whem the motModel checnges
+    
     func didUpdateValue(_ value: MOTModel) {
         
         numberOFSegmentsLabel.text = String(value.numberOfSegments)
-        totalFlightTImeLabel.text = value.totalFlightTimeAsString
-        
+        //totalFlightTImeLabel.text = value.totalFlightTimeAsString
+        totalFlightTImeLabel.text = intervalAsString(value.totalFlightTimeAsInterval)
     }
     
     
@@ -263,12 +265,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         segmentDataSource.removeAll()
         
         DispatchQueue.main.async {
-            self.totalFlightTImeLabel.text = motModel.totalFlightTimeAsString
+            self.totalFlightTImeLabel.text = intervalAsString(motModel.totalFlightTimeAsInterval)
+            
         }
         
         
         numberOFSegmentsLabel.text = String(motModel.numberOfSegments)
-        motModel.totalFlightTime = zeroValueTime
+        motModel.totalFlightTimeAsInterval = TimeInterval(0.0)
         
         motModel.augmented = false
         AugmentedOutlet.isOn = false
