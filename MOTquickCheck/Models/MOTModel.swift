@@ -102,15 +102,18 @@ struct MOTModel{
     }
     
     
+    var startTimeZone = 7
+    var dutyOnTimeZone = 7
+    
     var currentTime :Date = Date()
     var locationKnown :Bool = false
     var baseTimeZone :TimeZone = Calendar.current.timeZone
     var currentTimeZone :TimeZone = Calendar.current.timeZone // defaults to user defined
     var augmented :Bool = false
     var restFacility :Int = 1
-    var aclimated :Bool = true
+
     var lineHolder :Bool = false
-    var useUTC :Bool = false
+    
     var numberOfSegments: Int = 1
     var reserveStart :Date = zeroValueTime //TAG 2
     var dutyOn :Date = zeroValueTime //TAG 3
@@ -118,8 +121,20 @@ struct MOTModel{
     var projcetedBlock :TimeInterval = 0 //TAG 5
     var taxiIn :TimeInterval = 0 //TAG 6
     var totalFlightTimeAsInterval: TimeInterval = 0.0
-    //var totalFlightTime = Calendar.current.date(from: DateComponents(hour: 0, minute: 0)) // may be onsolete.
-
+    
+    // MARK: -- Under constructioon. Attempting to set an offset from base time property.
+    
+    var deltaTime: TimeInterval {
+        
+        if motModel.startTimeZone == motModel.dutyOnTimeZone{
+            return 0.0
+        }else{
+            
+            return Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600
+         
+        }
+    }
+    
     
     
     
@@ -136,14 +151,30 @@ struct MOTModel{
                                                                             minute: 0))
         var deltaTime = 0.0
         
-        if motModel.currentTimeZone == motModel.baseTimeZone {
+        
+//This function was replaed by the time zones gathered from the main VC, not location data
+        
+//        if motModel.currentTimeZone == motModel.baseTimeZone {
+//            dutyTableEntryTime = motModel.dutyOn
+//        }else{
+//            deltaTime = Double(motModel.currentTimeZone.secondsFromGMT() - motModel.baseTimeZone.secondsFromGMT())
+//            dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+//            
+//            print("the location is different and a delta time has been applied")
+//            
+//        }
+        
+        if motModel.startTimeZone == motModel.dutyOnTimeZone{
             dutyTableEntryTime = motModel.dutyOn
         }else{
-            deltaTime = Double(motModel.currentTimeZone.secondsFromGMT() - motModel.baseTimeZone.secondsFromGMT())
+            
+            deltaTime = Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600 
+          
             dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
             
             print("the location is different and a delta time has been applied")
-            
+            print("The Duty Table entry time is: \(timeAsStringLocal(dutyTableEntryTime!))")
+        
         }
         
         
@@ -335,8 +366,11 @@ struct MOTModel{
     // Duty Time Remaining
     
     var mustDutyOffat :Date{
-        //duty on plus max duty
-        return dutyOn.addingTimeInterval(maxDutyPeriod)
+        //duty on, sdjusted for deltaTime, pluse maxDutyPeriood
+        
+        let adjustedDutyOn = dutyOn.addingTimeInterval(deltaTime)
+        
+        return adjustedDutyOn.addingTimeInterval(maxDutyPeriod)
         
     }
     
@@ -367,6 +401,19 @@ struct MOTModel{
         let bufferInterval = -motModel.taxiIn
         return (motModel.mustDutyOffat.addingTimeInterval(projectedBlockInterval)).addingTimeInterval(bufferInterval)
     }
+    
+    var extendableToMOT :Date{
+        
+        //dutyBasedMOT + 2 hours.
+        
+        return dutyBasedMOT.addingTimeInterval(3600 * 2)
+        
+    }
+    
+    
+    
+    
+    
     
     //Max FLight Time
     //Determined From aclimated report time

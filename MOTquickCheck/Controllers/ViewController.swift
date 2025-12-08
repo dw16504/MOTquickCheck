@@ -25,7 +25,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     let geocoder = CLGeocoder()
     
     
-    //stuff that happens whem the motModel checnges
+    //stuff that happens whem the motModel changes
     
     func didUpdateValue(_ value: MOTModel) {
         
@@ -42,6 +42,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             
             if let placemark = placemarks?.first{
                 motModel.currentTimeZone = placemark.timeZone!
+                print(motModel.currentTimeZone)
             }else{
                 print("ERROR 2: Unable to assign timezone to placemark")
                 print(error as Any)
@@ -106,6 +107,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
         responseDateFormater.timeZone = Calendar.current.timeZone
         
+        selectedTimeZoneOutlet.text = TimeZonesOptions[motModel.startTimeZone].name
+        selectedOffsetOutlet.text = offsetAsString(offset:(TimeZonesOptions[motModel.startTimeZone].utcOffset))
+        
+        dutyOnTimeZoneOutlet.text = TimeZonesOptions[motModel.dutyOnTimeZone].name
+        dutyOnOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset)
+        
+        
         // TAG 2
         ReserveStartEntry.delegate = self
         setupTextField(targetField: ReserveStartEntry)
@@ -123,12 +131,9 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         setupTextField(targetField: bufferEntry)
         
         responseDateFormater.dateFormat = "HH:mm"
-        //currentTime.text = responseDateFormater.string(from: currentTimeDate)
-        currentTime.text = timeAsStringLocal(motModel.currentTime)
         
         numberOFSegmentsLabel.text = String(motModel.numberOfSegments)
         
-        setTimeOption(motModel.useUTC)
         
     }
     
@@ -177,23 +182,32 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     }
   
     @IBOutlet weak var restFacilityOutlet: UISegmentedControl!
+   
+    @IBAction func aclimatedHelpPressed(_ sender: UIButton) {
+        print("Aclimated help pressed")
+    }
     
+    @IBAction func aclimatedUpPressed(_ sender: UIButton) {
+        motModel.startTimeZone += 1
+        selectedTimeZoneOutlet.text = TimeZonesOptions[motModel.startTimeZone].name
+        selectedOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.startTimeZone].utcOffset)
+    }
     
-    @IBOutlet weak var AclimatedLabel: UILabel!
-    
-    @IBOutlet weak var AclimatedSwitchOutlet: UISwitch!
-    @IBAction func AclimatedToggel(_ sender: UISwitch) {
+    @IBAction func AclimatedDownPressed(_ sender: UIButton) {
         
-        motModel.aclimated.toggle()
-        
-        if motModel.aclimated == true{
-            AclimatedLabel.text = "Aclimated to Base"
-        }else{
-            AclimatedLabel.text = "Unaclimated"
-        }
+        motModel.startTimeZone -= 1
+        selectedTimeZoneOutlet.text = TimeZonesOptions[motModel.startTimeZone].name
+        selectedOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.startTimeZone].utcOffset)
         
     }
-  
+    
+    
+    @IBOutlet weak var selectedTimeZoneOutlet: UILabel!
+    
+    @IBOutlet weak var selectedOffsetOutlet: UILabel!
+    
+    
+    
     
     @IBOutlet weak var lineHolderLabel: UILabel!
     
@@ -224,27 +238,37 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     }
     
     
-    @IBAction func useUTCSelector(_ sender: UISwitch) {
-        motModel.useUTC.toggle()
-        setTimeOption(motModel.useUTC)
-    }
-    
-    
-    
-    @IBOutlet weak var useUTCSelectorOutlet: UISwitch!
-    
-    
-    @IBOutlet weak var timeSelectorLabel: UILabel!
-    
-    @IBOutlet weak var currentTimeLabel: UILabel!
-    
-    @IBOutlet weak var currentTime: UILabel! // set to TAG 0
-    
+   
     @IBOutlet weak var ReserveStartLabel: UILabel!
     
     @IBOutlet weak var ReserveStartEntry: UITextField! //set to TAG 2
     
     @IBOutlet weak var dutyOnEntry: UITextField! // set to TAG 3
+    
+    
+    @IBAction func dutyOnSelectorUp(_ sender: UIButton) {
+        
+        motModel.dutyOnTimeZone += 1
+        
+        dutyOnTimeZoneOutlet.text = TimeZonesOptions[motModel.dutyOnTimeZone].name
+        dutyOnOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset)
+
+    }
+    
+    @IBAction func duyOnSelectoprDown(_ sender: UIButton) {
+        
+        motModel.dutyOnTimeZone -= 1
+        
+        dutyOnTimeZoneOutlet.text = TimeZonesOptions[motModel.dutyOnTimeZone].name
+        dutyOnOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset)
+        
+    }
+    
+    
+    @IBOutlet weak var dutyOnTimeZoneOutlet: UILabel!
+    
+    @IBOutlet weak var dutyOnOffsetOutlet: UILabel!
+    
     
     @IBOutlet weak var projectedBlockEntry: UITextField! // set to TAG 5
     
@@ -281,17 +305,9 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         motModel.restFacility = 1
         restFacilityOutlet.selectedSegmentIndex = 0
         
-        motModel.aclimated = true
-        AclimatedSwitchOutlet.isOn = false
-        AclimatedLabel.text = "Aclimated to Base"
-        
         motModel.lineHolder = false
         lineHolderSwitchOutlet.isOn = false
         setReserveCondition()
-        
-        motModel.useUTC = false
-        useUTCSelectorOutlet.isOn = false
-        setTimeOption(false)
         
         motModel.reserveStart = zeroValueTime
         ReserveStartEntry.text = timeAsStringLocal(motModel.reserveStart)
@@ -305,10 +321,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         motModel.taxiIn = TimeInterval(0.0)
         bufferEntry.text = intervalAsString(motModel.taxiIn)
     
-        
-        //MARK: Pickup building
-        
-        
         
     }
     
@@ -369,25 +381,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         }
         
     }
-    
-    func setTimeOption(_ input: Bool){
-        if input == false{
-            responseDateFormater.timeZone = Calendar.current.timeZone
-            timeSelectorLabel.text = "Local Time"
-            currentTimeLabel.text = responseDateFormater.timeZone.description
-            
-            currentTime.text = responseDateFormater.string(from: motModel.currentTime)
-            
-        }else{
-            responseDateFormater.timeZone = TimeZone(abbreviation: "UTC")
-            timeSelectorLabel.text = "UTC"
-            currentTimeLabel.text = "Time UTC:"
-            
-            currentTime.text = responseDateFormater.string(from: motModel.currentTime)
-        }
-    }
-    
-    
     
 }
 

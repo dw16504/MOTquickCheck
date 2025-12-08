@@ -20,11 +20,12 @@ class MOTcontroller: UIViewController {
         numberOfSegments.text = String(motModel.numberOfSegments)
         totalFlightTIme.text = intervalAsString(motModel.totalFlightTimeAsInterval + motModel.projcetedBlock + motModel.taxiIn)
         MaXDutyPeriodLabel.text = intervalAsString(motModel.maxDutyPeriod)
-        MustDutyOffat.text = timeAsStringLocal(motModel.mustDutyOffat)
+        MustDutyOffat.text = timeAsStringUTC(motModel.mustDutyOffat)
         dutyTimeReminingLabel.text = timeAsStringLocal(motModel.dutyTimeRemaining)
         maxFlightTimeLabel.text = intervalAsString(motModel.maxFligtTIme)
         dutyBasedMot.text = timeAsStringUTC(motModel.dutyBasedMOT)
         DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
+        ExtendableToLabel.text = timeAsStringUTC(motModel.extendableToMOT)
         availableTaxiTime.text = intervalAsString(motModel.flightTimeRemaining)
         
     }
@@ -43,6 +44,10 @@ class MOTcontroller: UIViewController {
     
     @IBOutlet weak var flightTimeRemainingLablel: UILabel!
     @IBOutlet weak var dutyBasedMot: UILabel!
+    
+    @IBOutlet weak var ExtendableToLabel: UILabel!
+    
+    
 
     @IBOutlet weak var availableTaxiTime: UILabel!
     
