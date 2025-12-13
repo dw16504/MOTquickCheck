@@ -435,6 +435,17 @@ struct MOTModel{
         return maxFligtTIme - totalFlightTimeAsInterval - projcetedBlock - taxiIn
     }
     
+    var RAPFDP :TimeInterval{
+        
+        // this is the maximum reserve + FDP period as defined in FOM 1.38.7
+        
+        let conditionA :TimeInterval = 57600.0  // Maximum 16 hours
+        let conditionB :TimeInterval = motModel.maxDutyPeriod + 14400.0 // FDP + 4 hours
+        
+        return min(conditionA,conditionB)
+        
+    }
+    
 
     
 }

@@ -24,9 +24,33 @@ class MOTcontroller: UIViewController {
         dutyTimeReminingLabel.text = timeAsStringLocal(motModel.dutyTimeRemaining)
         maxFlightTimeLabel.text = intervalAsString(motModel.maxFligtTIme)
         dutyBasedMot.text = timeAsStringUTC(motModel.dutyBasedMOT)
-        DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
+        //DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
         ExtendableToLabel.text = timeAsStringUTC(motModel.extendableToMOT)
         availableTaxiTime.text = intervalAsString(motModel.flightTimeRemaining)
+        
+        
+        // RESERVE RAP FDP Functionality
+        
+        
+        if (motModel.lineHolder){
+            
+            // The Model is for a line holder
+            RAPFDPlabel.textColor =  .systemGray4
+            RAPFDP.textColor = .systemGray4
+            RAPFDP.text = "NA"
+            
+            
+        }else{
+            // The Model is for a Reserve
+            
+            RAPFDPlabel.textColor = .systemGray
+            RAPFDP.textColor = .systemGray
+            RAPFDP.text = intervalAsString(motModel.RAPFDP)
+            
+        }
+        
+        
+        
         
     }
     
@@ -35,8 +59,14 @@ class MOTcontroller: UIViewController {
     @IBOutlet weak var numberOfSegments: UILabel!
     @IBOutlet weak var totalFlightTIme: UILabel!
     @IBOutlet weak var MaXDutyPeriodLabel: UILabel!
-    @IBOutlet weak var DutyOnLabel: UILabel!    // This may need to togel depending on UTC or local
-    @IBOutlet weak var DutyOnTime: UILabel!
+    @IBOutlet weak var DutyOnTime: UILabel! // remove this
+    
+    @IBOutlet weak var RAPFDPlabel: UILabel!
+    
+    @IBOutlet weak var RAPFDP: UILabel!
+    
+    
+    
     @IBOutlet weak var MustDutyOffat: UILabel!
     @IBOutlet weak var dutyTimeReminingLabel: UILabel!
     

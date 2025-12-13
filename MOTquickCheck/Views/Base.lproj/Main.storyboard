@@ -1085,9 +1085,9 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vyW-YY-VGa" userLabel="Line 4">
                                                         <rect key="frame" x="42" y="150" width="330" height="30"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duty On (L):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TMI-8T-JqH">
-                                                                <rect key="frame" x="0.0" y="0.0" width="130.5" height="30"/>
-                                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Combined Max RAP/FDP:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TMI-8T-JqH">
+                                                                <rect key="frame" x="0.0" y="0.0" width="220.5" height="30"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                                 <color key="textColor" systemColor="systemGrayColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
@@ -1435,11 +1435,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="C0H-ts-m9e"/>
                     <connections>
-                        <outlet property="DutyOnLabel" destination="TMI-8T-JqH" id="kgw-dL-It2"/>
-                        <outlet property="DutyOnTime" destination="224-3B-FOd" id="jMI-Xw-NMo"/>
                         <outlet property="ExtendableToLabel" destination="Wf4-sT-aWP" id="jH8-BA-faB"/>
                         <outlet property="MaXDutyPeriodLabel" destination="q8Z-ce-yES" id="nlI-UO-KKA"/>
                         <outlet property="MustDutyOffat" destination="8F3-gp-VL3" id="I40-PY-LOw"/>
+                        <outlet property="RAPFDP" destination="224-3B-FOd" id="4su-cO-CZg"/>
+                        <outlet property="RAPFDPlabel" destination="TMI-8T-JqH" id="rGe-8H-K6c"/>
                         <outlet property="availableTaxiTime" destination="0sz-a9-N7q" id="6gv-3x-ezz"/>
                         <outlet property="currentTimeLabel" destination="ZnB-c6-UAw" id="4jT-z4-VZw"/>
                         <outlet property="dutyBasedMot" destination="Ooc-QA-1bN" id="kVM-qj-goD"/>
