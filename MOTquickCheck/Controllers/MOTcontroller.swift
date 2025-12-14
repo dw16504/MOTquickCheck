@@ -27,6 +27,7 @@ class MOTcontroller: UIViewController {
         //DutyOnTime.text = motModel.timeAsString(motModel.dutyOn)
         ExtendableToLabel.text = timeAsStringUTC(motModel.extendableToMOT)
         availableTaxiTime.text = intervalAsString(motModel.flightTimeRemaining)
+        responseSummary.text = motModel.response
         
         
         // RESERVE RAP FDP Functionality
@@ -82,6 +83,7 @@ class MOTcontroller: UIViewController {
     @IBOutlet weak var availableTaxiTime: UILabel!
     
     
+    @IBOutlet weak var responseSummary: UILabel!
     
     @IBAction func returnToMainPage(_ sender: Any) {
         

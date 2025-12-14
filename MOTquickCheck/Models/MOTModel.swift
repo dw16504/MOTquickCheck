@@ -53,14 +53,23 @@ func intervalAsString(_ timeToConvert: TimeInterval) -> String{
 
 
 func convertToDate(hours: Int, minutes: Int) -> Date{
-    // This is one of three places that assign a date to a time object, it pulls a new time object
-    // This seems bug prone to me.
     
     let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
-    return Calendar.current.date(from: DateComponents(year: components.year,
+    
+    //should work
+    //return Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,
+//                                                      year: components.year,
+//                                                      month: components.month,
+//                                                      day: components.day,
+//                                                      hour: Int(hours),minute: Int(minutes)))!
+//
+    return Calendar.current.date(from: DateComponents(
+                                                      year: components.year,
                                                       month: components.month,
                                                       day: components.day,
                                                       hour: Int(hours),minute: Int(minutes)))!
+    
+   
 }
 
 
@@ -129,9 +138,9 @@ struct MOTModel{
         if motModel.startTimeZone == motModel.dutyOnTimeZone{
             return 0.0
         }else{
-            
-            return Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600
-         
+           
+        return Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600
+    
         }
     }
     
@@ -142,70 +151,39 @@ struct MOTModel{
     
     var maxDutyPeriod: TimeInterval {
         
-        
         var tableOneLine = 1
-        var dutyTableEntryTime = Calendar.current.date(from: DateComponents(year: components.year,
-                                                                            month:components.month,
-                                                                            day: components.day,
-                                                                            hour: 0,
-                                                                            minute: 0))
-        var deltaTime = 0.0
+ 
+        let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
         
         
-//This function was replaed by the time zones gathered from the main VC, not location data
-        
-//        if motModel.currentTimeZone == motModel.baseTimeZone {
-//            dutyTableEntryTime = motModel.dutyOn
-//        }else{
-//            deltaTime = Double(motModel.currentTimeZone.secondsFromGMT() - motModel.baseTimeZone.secondsFromGMT())
-//            dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
-//            
-//            print("the location is different and a delta time has been applied")
-//            
-//        }
-        
-        if motModel.startTimeZone == motModel.dutyOnTimeZone{
-            dutyTableEntryTime = motModel.dutyOn
-        }else{
-            
-            deltaTime = Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600 
-          
-            dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
-            
-            print("the location is different and a delta time has been applied")
-            print("The Duty Table entry time is: \(timeAsStringLocal(dutyTableEntryTime!))")
-        
-        }
-        
-        
-        if (dutyTableEntryTime! >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 03, minutes: 59){
+        if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59){
             //0000 - 0359 Local
             tableOneLine = 1
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 04, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 04, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 04, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 04, minutes: 59){
             //0400 - 0459
             tableOneLine = 2
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 05, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 05, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 05, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 05, minutes: 59){
             //0500 - 0559
             tableOneLine = 3
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 06, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 06, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 06, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 06, minutes: 59){
             //0600 - 0659
             tableOneLine = 4
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 07, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 11, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 07, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 11, minutes: 59){
             //0700 - 1159
             tableOneLine = 5
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 12, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 12, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 12, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 12, minutes: 59){
             //1200 - 1259
             tableOneLine = 6
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 13, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 16, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 13, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 16, minutes: 59){
             //1300 -1659
             tableOneLine = 7
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 17, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 21, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 17, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 21, minutes: 59){
             //1700 - 2159
             tableOneLine = 8
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 22, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 22, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 22, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 22, minutes: 59){
             //2200 - 2259
             tableOneLine = 9
-        }else if (dutyTableEntryTime! >= convertToDate(hours: 23, minutes: 00)) && dutyTableEntryTime!  <= convertToDate(hours: 23, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 23, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 23, minutes: 59){
             //2300 - 2359
             tableOneLine = 10
         }else{
@@ -366,11 +344,8 @@ struct MOTModel{
     // Duty Time Remaining
     
     var mustDutyOffat :Date{
-        //duty on, sdjusted for deltaTime, pluse maxDutyPeriood
         
-        let adjustedDutyOn = dutyOn.addingTimeInterval(deltaTime)
-        
-        return adjustedDutyOn.addingTimeInterval(maxDutyPeriod)
+        return dutyOn.addingTimeInterval(maxDutyPeriod).addingTimeInterval(deltaTime)
         
     }
     
@@ -390,7 +365,6 @@ struct MOTModel{
         
     }
     
-    //MARK: TODO fix this for intervals
     // Duty Based MOT:
     //Must Duty Off at(date) - Projected Block(interval) - TaxiIn(interval)
     var dutyBasedMOT :Date{
@@ -443,6 +417,20 @@ struct MOTModel{
         let conditionB :TimeInterval = motModel.maxDutyPeriod + 14400.0 // FDP + 4 hours
         
         return min(conditionA,conditionB)
+        
+    }
+    
+    var response :String{
+        
+        if dutyBasedMOT <= currentTime{
+            
+            return "For Departure Planning: Do not block out if either MOT is expectd to be exceeded"
+        }else{
+            
+            return "Error: check response conditions"
+        }
+        
+        
         
     }
     

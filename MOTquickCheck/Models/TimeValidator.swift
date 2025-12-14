@@ -60,11 +60,12 @@ func timeValidator(stringInput: String) throws -> Date {
     }
    
     
-    let returnTime = Calendar.current.date(from: DateComponents(year: components.year,
+    let returnTime = Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,                                                                       year: components.year,
                                                                 month: components.month,
                                                                 day: components.day,
                                                                 hour: Int(hoursEntry),
-                                                                minute: Int(minutesEntry)))!
+                                                                minute: Int(minutesEntry),
+                                                                ))!
     
     return returnTime
     
