@@ -344,7 +344,7 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             var stringEntered = "Validator Error"
             
             if textField.tag <= 4{
-                responseX = try timeValidator(stringInput: textField.text ?? "")
+                responseX = try timeValidator(stringInput: textField.text ?? "", TimeZone: motModel.baseTimeZone)
                 responseDateFormater.dateFormat = "HH:mm"
                 stringEntered = (responseDateFormater.string(from: responseX))
             }else if textField.tag > 4{
