@@ -15,8 +15,10 @@ let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
 //MARK: - ConversionFunctions:
 
-func timeAsStringLocal(_ timeToConvert: Date) -> String{
+func timeAsStringLocal(_ timeToConvert: Date, timeZone: TimeZone = motModel.baseTimeZone) -> String{
   
+    var calendar = Calendar.current
+    calendar.timeZone = timeZone  // Use base timezone for extraction
     
     let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
     let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
@@ -63,12 +65,14 @@ func convertToDate(hours: Int, minutes: Int, TimeZone: TimeZone? = nil) -> Date{
 //                                                      day: components.day,
 //                                                      hour: Int(hours),minute: Int(minutes)))!
 //
-    return Calendar.current.date(from: DateComponents(
+    return Calendar.current.date(from: DateComponents(timeZone: TimeZone,
                                                       year: components.year,
                                                       month: components.month,
                                                       day: components.day,
                                                       hour: Int(hours),minute: Int(minutes)))!
     
+   
+
    
 }
 
@@ -154,8 +158,9 @@ struct MOTModel{
         let tz = baseTimeZone
         var tableOneLine = 1
  
-        let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+        //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)  //TEST OMMISION
         
+        let dutyTableEntryTime = motModel.dutyOn
         
         if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59, TimeZone: tz){
             //0000 - 0359 Local
