@@ -15,7 +15,7 @@ var companyPurple = (hex:"#551cc7",rgb:"rgb(85, 28, 199)")
 
 
 var motModel = MOTModel()
-//var currentTimeDate: Date =  Date()
+
 let responseDateFormater = DateFormatter()
 
 
@@ -339,19 +339,34 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
         do{
             
-            var responseX :Date = Date()  //Make these better defaults
+            //So I think this date model needs to be set for defaults.
+            
+            var responseX :Date = Date()
+//            
+//            let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
+//            responseX = Calendar.current.date(from: DateComponents(timeZone: motModel.dutyOnTimezone,                                                                  year:  components.year,
+//                                                                        month: components.month,
+//                                                                        day: components.day,
+//                                                                        hour: 0,
+//                                                                        minute: 0),
+//                                                                        )!
+//             
+//            
             var responseY :TimeInterval = 3600.01 // make these better defaults
             var stringEntered = "Validator Error"
             
+            
             if textField.tag <= 4{
-                responseX = try timeValidator(stringInput: textField.text ?? "", TimeZone: motModel.baseTimeZone)
+                responseX = try timeValidator(stringInput: textField.text ?? "")
                 responseDateFormater.dateFormat = "HH:mm"
                 stringEntered = (responseDateFormater.string(from: responseX))
+                
+                
             }else if textField.tag > 4{
                 responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
-                //responseDateFormater.dateFormat = "HH:mm"
+                
                 stringEntered = intervalAsString(responseY)
-                //TODO: interval logic goes here
+                
                 
             }
             
@@ -374,11 +389,16 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
            
             textField.text = stringEntered
             
+            print("The textDidFinish function ran")
+            print("responssX is \(responseX)")
             
             
         }catch{
             print(error)
         }
+        
+        
+        
         
     }
     

@@ -16,9 +16,9 @@ enum TimeValidatorError: Error{
 
 
 
-func timeValidator(stringInput: String, TimeZone: TimeZone? = nil) throws -> Date {
+func timeValidator(stringInput: String) throws -> Date {
     
-    let components = Calendar.current.dateComponents([.timeZone,.year,.month,.day], from: Date())
+    let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     let inputCharacterLength = stringInput.count
     
     // Check to see if the Entry is more than 4 Characters.
@@ -60,7 +60,7 @@ func timeValidator(stringInput: String, TimeZone: TimeZone? = nil) throws -> Dat
     }
    
     
-    let returnTime = Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,                                                                                              year: components.year,
+    let returnTime = Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,                                                                     year: components.year,
                                                                 month: components.month,
                                                                 day: components.day,
                                                                 hour: Int(hoursEntry),

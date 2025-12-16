@@ -15,10 +15,8 @@ let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
 //MARK: - ConversionFunctions:
 
-func timeAsStringLocal(_ timeToConvert: Date, timeZone: TimeZone = motModel.baseTimeZone) -> String{
+func timeAsStringLocal(_ timeToConvert: Date) -> String{
   
-    var calendar = Calendar.current
-    calendar.timeZone = timeZone  // Use base timezone for extraction
     
     let hoursString = (Calendar.current.dateComponents([.hour], from: timeToConvert))
     let minuteString = (Calendar.current.dateComponents([.minute], from: timeToConvert))
@@ -54,7 +52,7 @@ func intervalAsString(_ timeToConvert: TimeInterval) -> String{
 
 
 
-func convertToDate(hours: Int, minutes: Int, TimeZone: TimeZone? = nil) -> Date{
+func convertToDate(hours: Int, minutes: Int) -> Date{
     
     let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     
@@ -65,14 +63,12 @@ func convertToDate(hours: Int, minutes: Int, TimeZone: TimeZone? = nil) -> Date{
 //                                                      day: components.day,
 //                                                      hour: Int(hours),minute: Int(minutes)))!
 //
-    return Calendar.current.date(from: DateComponents(timeZone: TimeZone,
+    return Calendar.current.date(from: DateComponents(
                                                       year: components.year,
                                                       month: components.month,
                                                       day: components.day,
                                                       hour: Int(hours),minute: Int(minutes)))!
     
-   
-
    
 }
 
@@ -121,14 +117,16 @@ struct MOTModel{
     var currentTime :Date = Date()
     var locationKnown :Bool = false
     //var baseTimeZone :TimeZone = Calendar.current.timeZone
+    
     var baseTimeZone: TimeZone {
         return TimeZone(secondsFromGMT: TimeZonesOptions[startTimeZone].utcOffset * 3600)!
     }
-    
+
     var dutyOnTimezone: TimeZone {
         return TimeZone(secondsFromGMT: TimeZonesOptions[dutyOnTimeZone].utcOffset * 3600)!
     }
 
+    
     
     var currentTimeZone :TimeZone = Calendar.current.timeZone // defaults to user defined
     var augmented :Bool = false
@@ -164,41 +162,39 @@ struct MOTModel{
     
     var maxDutyPeriod: TimeInterval {
         
-        let tz = baseTimeZone
         var tableOneLine = 1
  
-        //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)  //TEST OMMISION
+        let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
         
-        let dutyTableEntryTime = motModel.dutyOn
         
-        if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59, TimeZone: tz){
+        if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59){
             //0000 - 0359 Local
             tableOneLine = 1
-        }else if (dutyTableEntryTime >= convertToDate(hours: 04, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 04, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 04, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 04, minutes: 59){
             //0400 - 0459
             tableOneLine = 2
-        }else if (dutyTableEntryTime >= convertToDate(hours: 05, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 05, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 05, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 05, minutes: 59){
             //0500 - 0559
             tableOneLine = 3
-        }else if (dutyTableEntryTime >= convertToDate(hours: 06, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 06, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 06, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 06, minutes: 59){
             //0600 - 0659
             tableOneLine = 4
-        }else if (dutyTableEntryTime >= convertToDate(hours: 07, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 11, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 07, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 11, minutes: 59){
             //0700 - 1159
             tableOneLine = 5
-        }else if (dutyTableEntryTime >= convertToDate(hours: 12, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 12, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 12, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 12, minutes: 59){
             //1200 - 1259
             tableOneLine = 6
-        }else if (dutyTableEntryTime >= convertToDate(hours: 13, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 16, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 13, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 16, minutes: 59){
             //1300 -1659
             tableOneLine = 7
-        }else if (dutyTableEntryTime >= convertToDate(hours: 17, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 21, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 17, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 21, minutes: 59){
             //1700 - 2159
             tableOneLine = 8
-        }else if (dutyTableEntryTime >= convertToDate(hours: 22, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 22, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 22, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 22, minutes: 59){
             //2200 - 2259
             tableOneLine = 9
-        }else if (dutyTableEntryTime >= convertToDate(hours: 23, minutes: 00, TimeZone: tz)) && dutyTableEntryTime  <= convertToDate(hours: 23, minutes: 59, TimeZone: tz){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 23, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 23, minutes: 59){
             //2300 - 2359
             tableOneLine = 10
         }else{
@@ -408,9 +404,7 @@ struct MOTModel{
     //Determined From aclimated report time
     var maxFligtTIme :TimeInterval{
         
-        let tz = baseTimeZone
-        
-        if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00, TimeZone: tz)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59, TimeZone: tz)){
+        if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59)){
             // 0000 - 0459 8 hours Max flight
             return TimeInterval(9 * 3600)
         }else{
