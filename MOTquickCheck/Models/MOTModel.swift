@@ -120,7 +120,16 @@ struct MOTModel{
     
     var currentTime :Date = Date()
     var locationKnown :Bool = false
-    var baseTimeZone :TimeZone = Calendar.current.timeZone
+    //var baseTimeZone :TimeZone = Calendar.current.timeZone
+    var baseTimeZone: TimeZone {
+        return TimeZone(secondsFromGMT: TimeZonesOptions[startTimeZone].utcOffset * 3600)!
+    }
+    
+    var dutyOnTimezone: TimeZone {
+        return TimeZone(secondsFromGMT: TimeZonesOptions[dutyOnTimeZone].utcOffset * 3600)!
+    }
+
+    
     var currentTimeZone :TimeZone = Calendar.current.timeZone // defaults to user defined
     var augmented :Bool = false
     var restFacility :Int = 1
