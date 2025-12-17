@@ -338,24 +338,11 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     func textFieldDidEndEditing(_ textField: UITextField){
         
         do{
-            
-            //So I think this date model needs to be set for defaults.
-            
             var responseX :Date = Date()
-//            
-//            let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
-//            responseX = Calendar.current.date(from: DateComponents(timeZone: motModel.dutyOnTimezone,                                                                  year:  components.year,
-//                                                                        month: components.month,
-//                                                                        day: components.day,
-//                                                                        hour: 0,
-//                                                                        minute: 0),
-//                                                                        )!
-//             
-//            
             var responseY :TimeInterval = 3600.01 // make these better defaults
             var stringEntered = "Validator Error"
             
-            
+            // This is executed for dates
             if textField.tag <= 4{
                 responseX = try timeValidator(stringInput: textField.text ?? "")
                 responseDateFormater.dateFormat = "HH:mm"
@@ -364,7 +351,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
                 
             }else if textField.tag > 4{
                 responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
-                
                 stringEntered = intervalAsString(responseY)
                 
                 
@@ -388,10 +374,6 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             }
            
             textField.text = stringEntered
-            
-            print("The textDidFinish function ran")
-            print("responssX is \(responseX)")
-            
             
         }catch{
             print(error)

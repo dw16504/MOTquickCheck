@@ -163,8 +163,16 @@ struct MOTModel{
     var maxDutyPeriod: TimeInterval {
         
         var tableOneLine = 1
- 
-        let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+        
+        
+        //these two lines are part of the problem
+        
+        //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+        let dutyTableEntryTime = motModel.dutyOn
+        
+        print("duty on time is: \(timeAsString(motModel.dutyOn))")
+        print("The delta time is: \(deltaTime)")
+        print("The Duty table entry time is \(timeAsString(dutyTableEntryTime))")
         
         
         if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59){

@@ -18,6 +18,9 @@ enum TimeValidatorError: Error{
 
 func timeValidator(stringInput: String) throws -> Date {
     
+    var calendar = Calendar.current
+    calendar.timeZone = motModel.baseTimeZone  // ← Use BASE timezone for extraction
+    
     let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     let inputCharacterLength = stringInput.count
     
@@ -60,7 +63,8 @@ func timeValidator(stringInput: String) throws -> Date {
     }
    
     
-    let returnTime = Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,                                                                     year: components.year,
+    let returnTime = Calendar.current.date(from: DateComponents(timeZone: motModel.baseTimeZone,
+                                                                year: components.year,
                                                                 month: components.month,
                                                                 day: components.day,
                                                                 hour: Int(hoursEntry),
