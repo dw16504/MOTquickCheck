@@ -331,49 +331,35 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     }
     
     
-    
-   
-    
-    
     func textFieldDidEndEditing(_ textField: UITextField){
+      
+        //TODO: there is an extranupuse variable, startime, duty time and dutyontime! see remarks in validator.
+        //TODO: rename these variables after you get it saved.
         
         do{
-            var responseX :Date = Date()
-            var responseY :TimeInterval = 3600.01 // make these better defaults
-            var stringEntered = "Validator Error"
             
-            // This is executed for dates
-            if textField.tag <= 4{
-                responseX = try timeValidator(stringInput: textField.text ?? "")
-                responseDateFormater.dateFormat = "HH:mm"
-                stringEntered = (responseDateFormater.string(from: responseX))
+            let returnFromValidator = try timeProcessor(entryString: textField.text!, tag: textField.tag, timeZone: motModel.dutyOnTimezone)
+      
+            let responsFormater = DateFormatter()
+            responsFormater.dateFormat = "HH:mm"
+            responsFormater.timeZone = motModel.dutyOnTimezone
+            
+            if case .dateReturned(let date) = returnFromValidator {
+                print("it was a date, and the value is \(date) ")
                 
+                textField.text = responsFormater.string(from: date)
                 
-            }else if textField.tag > 4{
-                responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
-                stringEntered = intervalAsString(responseY)
+            }else if case .intervalReturned(let timeInterval) = returnFromValidator {
+                print("it was an interval and the value is \(timeInterval)")
                 
+                textField.text = intervalAsString(timeInterval)
+                
+                //TODO:
+                //Interal return locgic goes here
                 
             }
+                
             
-            switch textField.tag{
-                
-            case 2:
-                motModel.reserveStart = responseX //Date
-            case 3:
-                motModel.dutyOn = responseX //Date
-            case 4:
-                motModel.actualBlockOut = responseX  //Date
-            case 5:
-                motModel.projcetedBlock = responseY //Interval
-            case 6:
-                motModel.taxiIn = responseY //Interval
-            default:
-                print("Error: no update was made in the DidEndEditing Switch statement")
-                
-            }
-           
-            textField.text = stringEntered
             
         }catch{
             print(error)
@@ -382,7 +368,61 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
         
         
-    }
+        // so the mission is to take the textfield entered and put it into a function
+        // the function should take three arguments, string entry, the yag, and the timezone.
+        
+        // ** when the function wtites to update the time, you will probalky need antoher call to address when the
+        // ** timezone is changed from the UI after the time is entered, perhaps a separate function?
+        
+        
+//
+//        do{
+//            var responseX :Date = Date()
+//            
+//            var responseY :TimeInterval = 3600.01 // make these better defaults
+//            var stringEntered = "Validator Error"
+//            
+//            // This is executed for dates
+//            if textField.tag <= 4{
+//                let responseX = try timeValidator(stringInput: textField.text ?? "")
+//                responseDateFormater.dateFormat = "HH:mm"
+//                stringEntered = (responseDateFormater.string(from: responseX))
+//                
+//                
+//            }else if textField.tag > 4{
+//                responseY = try timeValidatorForIntervals(stringInput: textField.text ?? "")
+//                stringEntered = intervalAsString(responseY)
+//                
+//                
+//            }
+//            
+//            switch textField.tag{
+//                
+//            case 2:
+//                motModel.reserveStart = responseX //Date
+//            case 3:
+//                motModel.dutyOn = responseX //Date
+//            case 4:
+//                motModel.actualBlockOut = responseX  //Date
+//            case 5:
+//                motModel.projcetedBlock = responseY //Interval
+//            case 6:
+//                motModel.taxiIn = responseY //Interval
+//            default:
+//                print("Error: no update was made in the DidEndEditing Switch statement")
+//                
+//            }
+//            
+//            textField.text = stringEntered
+//            
+//        }catch{
+//            print(error)
+//        }
+//        
+//        
+//        
+//        
+   }
     
 }
 

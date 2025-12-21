@@ -11,8 +11,6 @@ var calendar = Calendar.current
 
 let zeroValueTime = convertToDate(hours: 0, minutes: 0)
 
-
-
 //MARK: - ConversionFunctions:
 
 func timeAsStringLocal(_ timeToConvert: Date) -> String{
@@ -141,16 +139,15 @@ struct MOTModel{
     var projcetedBlock :TimeInterval = 0 //TAG 5
     var taxiIn :TimeInterval = 0 //TAG 6
     var totalFlightTimeAsInterval: TimeInterval = 0.0
+   
     
-    // MARK: -- Under constructioon. Attempting to set an offset from base time property.
-    
-    var deltaTime: TimeInterval {
+    var deltaTime :TimeInterval {
         
         if motModel.startTimeZone == motModel.dutyOnTimeZone{
             return 0.0
         }else{
            
-        return Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600
+            return Double(TimeZonesOptions[motModel.startTimeZone].utcOffset - TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset) * 3600
     
         }
     }
@@ -162,13 +159,20 @@ struct MOTModel{
     
     var maxDutyPeriod: TimeInterval {
         
-        var tableOneLine = 1
+
+            //i think this is where the delta time function needs to go. or at least a call
+            var tableOneLine = 1
         
+            //these two lines are part of the problem
+            
+            // i think we may have to convert this to a local timezone, no? how does it know what time zone?
+            // dont we tell it?
+            
+            let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+            //let dutyTableEntryTime = motModel.dutyOn
+            
+            
         
-        //these two lines are part of the problem
-        
-        //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
-        let dutyTableEntryTime = motModel.dutyOn
         
         print("duty on time is: \(timeAsString(motModel.dutyOn))")
         print("The delta time is: \(deltaTime)")
