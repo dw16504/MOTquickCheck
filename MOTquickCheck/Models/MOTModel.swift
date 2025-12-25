@@ -9,7 +9,7 @@ import Foundation
 var calendar = Calendar.current
 
 
-let zeroValueTime = convertToDate(hours: 0, minutes: 0)
+let zeroValueTime = convertToDate(hours: 0, minutes: 0, timeZonetoComapre: TimeZone.current)
 
 //MARK: - ConversionFunctions:
 
@@ -50,7 +50,11 @@ func intervalAsString(_ timeToConvert: TimeInterval) -> String{
 
 
 
-func convertToDate(hours: Int, minutes: Int) -> Date{
+func convertToDate(hours: Int, minutes: Int, timeZonetoComapre: TimeZone) -> Date{
+    
+    
+    //this needs to take a time zone argument, im thnkling that we need to take the local duty on time and
+    //compare it to the table local time, so we should not need to check delta time at all....
     
     let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     
@@ -61,7 +65,7 @@ func convertToDate(hours: Int, minutes: Int) -> Date{
 //                                                      day: components.day,
 //                                                      hour: Int(hours),minute: Int(minutes)))!
 //
-    return Calendar.current.date(from: DateComponents(
+    return Calendar.current.date(from: DateComponents(timeZone: timeZonetoComapre,
                                                       year: components.year,
                                                       month: components.month,
                                                       day: components.day,
@@ -168,8 +172,8 @@ struct MOTModel{
             // i think we may have to convert this to a local timezone, no? how does it know what time zone?
             // dont we tell it?
             
-            let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
-            //let dutyTableEntryTime = motModel.dutyOn
+            //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+            let dutyTableEntryTime = motModel.dutyOn
             
             
         
@@ -179,34 +183,34 @@ struct MOTModel{
         print("The Duty table entry time is \(timeAsString(dutyTableEntryTime))")
         
         
-        if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59){
+        if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0000 - 0359 Local
             tableOneLine = 1
-        }else if (dutyTableEntryTime >= convertToDate(hours: 04, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 04, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 04, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 04, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0400 - 0459
             tableOneLine = 2
-        }else if (dutyTableEntryTime >= convertToDate(hours: 05, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 05, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 05, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 05, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0500 - 0559
             tableOneLine = 3
-        }else if (dutyTableEntryTime >= convertToDate(hours: 06, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 06, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 06, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 06, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0600 - 0659
             tableOneLine = 4
-        }else if (dutyTableEntryTime >= convertToDate(hours: 07, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 11, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 07, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 11, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0700 - 1159
             tableOneLine = 5
-        }else if (dutyTableEntryTime >= convertToDate(hours: 12, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 12, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 12, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 12, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //1200 - 1259
             tableOneLine = 6
-        }else if (dutyTableEntryTime >= convertToDate(hours: 13, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 16, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 13, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 16, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //1300 -1659
             tableOneLine = 7
-        }else if (dutyTableEntryTime >= convertToDate(hours: 17, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 21, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 17, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 21, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //1700 - 2159
             tableOneLine = 8
-        }else if (dutyTableEntryTime >= convertToDate(hours: 22, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 22, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 22, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 22, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //2200 - 2259
             tableOneLine = 9
-        }else if (dutyTableEntryTime >= convertToDate(hours: 23, minutes: 00)) && dutyTableEntryTime  <= convertToDate(hours: 23, minutes: 59){
+        }else if (dutyTableEntryTime >= convertToDate(hours: 23, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 23, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //2300 - 2359
             tableOneLine = 10
         }else{
@@ -362,19 +366,10 @@ struct MOTModel{
         return (0 * 3600) + (0 * 60) as TimeInterval // zero valu default
     }
     
-    
-    
-    // Duty Time Remaining
-    
     var mustDutyOffat :Date{
         
         return dutyOn.addingTimeInterval(maxDutyPeriod).addingTimeInterval(deltaTime)
-        
-    }
-    
-    
-    
-    
+           }
     
     // Duty Time Remaining
     
@@ -416,7 +411,7 @@ struct MOTModel{
     //Determined From aclimated report time
     var maxFligtTIme :TimeInterval{
         
-        if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59)){
+        if (motModel.dutyOn >= convertToDate(hours: 5, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && (motModel.dutyOn <= convertToDate(hours: 19, minutes: 59, timeZonetoComapre: dutyOnTimezone)){
             // 0000 - 0459 8 hours Max flight
             return TimeInterval(9 * 3600)
         }else{
