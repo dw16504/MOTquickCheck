@@ -39,14 +39,29 @@ enum ProcessedTime {
 func timeProcessor(entryString: String, tag: Int, timeZone: TimeZone) throws -> ProcessedTime{
     
     //STEP ONE: CLEAN DATA
-    let inputCharacterLength = entryString.count
+    
+    // Check to see if its a base entry, and if so change it.
+    
+    let pattern = #"^\d{1,2}:\d{2}$"#
+    var entryStringA = ""
+
+    if entryString.range(of: pattern, options: .regularExpression) != nil {
+        entryStringA = entryString.replacingOccurrences(of: ":", with: "")
+        print(entryString) // "1245"
+    }else{
+        entryStringA = entryString
+    }
+    
+    // TODO: you may want to run some check data here!
+    
+    let inputCharacterLength = entryStringA.count
     if inputCharacterLength > 4{
         throw TimeValidatorError.entryTooLong(errorDecription: "There are too many charagter to be a time")
     }
     
     // Check to see if all Characters are Numbers.
     
-    for character in entryString{
+    for character in entryStringA{
         if character.isNumber == false{
             throw TimeValidatorError.notANumber(errorDescription: "Not A Number")
         }
@@ -54,40 +69,28 @@ func timeProcessor(entryString: String, tag: Int, timeZone: TimeZone) throws -> 
     
     // Makes sure the Entry is not blank
     
-    if entryString == ""{
+    if entryStringA == ""{
         throw TimeValidatorError.noEntry(errorDescriptiopn: "No Input Entry")
     }
     
     //STEP TWO: EXTRACT COMPONENTS TO BUID DATE
     
-    var minutesEntry = entryString.suffix(2)
+    var minutesEntry = entryStringA.suffix(2)
     var hoursEntry = ""
     
     if inputCharacterLength == 4 {
-        hoursEntry = String(entryString.prefix(2))
+        hoursEntry = String(entryStringA.prefix(2))
     }else if inputCharacterLength == 2{
         hoursEntry = ""
     }else if inputCharacterLength == 1{
-        minutesEntry = "0" + entryString
+        minutesEntry = "0" + entryStringA
         // covers a single digit entry
     }else{
-        hoursEntry = String(entryString[entryString.startIndex])
+        hoursEntry = String(entryStringA[entryStringA.startIndex])
     }
     
     
     if tag <= 4{
-        
-        print("The hours derived are \(hoursEntry)")
-        print("The minites derived are \(minutesEntry)")
-        
-        // baseTimeZone is the start time zone
-        // dutyOnTimezone is the duty on time zone, USE THIS ONE!!
-        // dutyOnTimeZone (Big Z is the number selector)
-        
-        
-        print("The aclimated start is \(motModel.baseTimeZone.description)")
-        print("The duty on timezone is \(motModel.dutyOnTimezone.description)")
-        
         
         // okay lets build a date object for duty on. The duty on time is a local time, so we need to know what time zone they
         // duty onm it, thats what the Dutyon time zone entry is for, use that one (DutyOnTimezone).
@@ -108,6 +111,9 @@ func timeProcessor(entryString: String, tag: Int, timeZone: TimeZone) throws -> 
         case 2:
             motModel.reserveStart = returningDate! //Date
         case 3:
+            
+            print("****The Value being created in the validator for dutyOn is \(returningDate)")
+            
             motModel.dutyOn = returningDate! //Date
         case 4:
             motModel.actualBlockOut = returningDate!  //Date
@@ -143,11 +149,6 @@ func timeProcessor(entryString: String, tag: Int, timeZone: TimeZone) throws -> 
         }
         
         
-        
-        
-        
-        print("The Time INTERVAL entered is: \(hoursEntry):\(minutesEntry)")
-        
         return .intervalReturned(returnTimeInSeconds)
         
         //TODO: this is where you left off, you need to accept the interval return value in view controller and
@@ -160,13 +161,6 @@ func timeProcessor(entryString: String, tag: Int, timeZone: TimeZone) throws -> 
         //hash table in the mot model.
         
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     

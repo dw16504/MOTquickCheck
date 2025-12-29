@@ -250,6 +250,11 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
         
         motModel.dutyOnTimeZone += 1
         
+    //MARK: --- this may work iof you can figure out how to do it.
+        
+        print("The value im attempting to pass in the argumet is: \(dutyOnEntry)")
+        self.textFieldDidEndEditing(dutyOnEntry)
+        
         dutyOnTimeZoneOutlet.text = TimeZonesOptions[motModel.dutyOnTimeZone].name
         dutyOnOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset)
 
@@ -258,6 +263,8 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     @IBAction func duyOnSelectoprDown(_ sender: UIButton) {
         
         motModel.dutyOnTimeZone -= 1
+        
+        self.textFieldDidEndEditing(dutyOnEntry)
         
         dutyOnTimeZoneOutlet.text = TimeZonesOptions[motModel.dutyOnTimeZone].name
         dutyOnOffsetOutlet.text = offsetAsString(offset: TimeZonesOptions[motModel.dutyOnTimeZone].utcOffset)
@@ -277,6 +284,8 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
    // Action that goes to MOTController
     @IBAction func MOTselector(_ sender: Any) {
+        
+        
             motModel.currentTime = Date()  //reset Current Time before segue
             performSegue(withIdentifier: "gotoMOTcontroller", sender: self)
        
@@ -333,8 +342,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
     
     func textFieldDidEndEditing(_ textField: UITextField){
       
-        //TODO: there is an extranupuse variable, startime, duty time and dutyontime! see remarks in validator.
+        //TODO: there is an extranuouse variable, startime, duty time and dutyontime! see remarks in validator.
         //TODO: rename these variables after you get it saved.
+        
+        
+        print("text field did end editing was run.")
+        
+        print("The data being passed into the textFieldDidEndEditiog function is: \(textField)")
         
         do{
             
@@ -345,17 +359,13 @@ class ViewController: UIViewController, UITextFieldDelegate, SegmentListDelegate
             responsFormater.timeZone = motModel.dutyOnTimezone
             
             if case .dateReturned(let date) = returnFromValidator {
-                print("it was a date, and the value is \(date) ")
-                
+               
                 textField.text = responsFormater.string(from: date)
                 
             }else if case .intervalReturned(let timeInterval) = returnFromValidator {
-                print("it was an interval and the value is \(timeInterval)")
                 
                 textField.text = intervalAsString(timeInterval)
-                
-                //TODO:
-                //Interal return locgic goes here
+             
                 
             }
                 

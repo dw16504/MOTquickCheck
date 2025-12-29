@@ -88,8 +88,6 @@ func convertToInterval(TimeOject:Date) -> TimeInterval{
 
 struct MOTModel{
     
-    
-    
     //let calendar = Calendar.current
     let components = Calendar.current.dateComponents([.year,.month,.day], from: Date())
     
@@ -163,25 +161,13 @@ struct MOTModel{
     
     var maxDutyPeriod: TimeInterval {
         
-
-            //i think this is where the delta time function needs to go. or at least a call
             var tableOneLine = 1
         
-            //these two lines are part of the problem
             
-            // i think we may have to convert this to a local timezone, no? how does it know what time zone?
-            // dont we tell it?
+            let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
+            //let dutyTableEntryTime = motModel.dutyOn
             
-            //let dutyTableEntryTime = motModel.dutyOn.addingTimeInterval(deltaTime)
-            let dutyTableEntryTime = motModel.dutyOn
-            
-            
-        
-        
-        print("duty on time is: \(timeAsString(motModel.dutyOn))")
-        print("The delta time is: \(deltaTime)")
-        print("The Duty table entry time is \(timeAsString(dutyTableEntryTime))")
-        
+       
         
         if (dutyTableEntryTime >= convertToDate(hours: 00, minutes: 00, timeZonetoComapre: dutyOnTimezone)) && dutyTableEntryTime  <= convertToDate(hours: 03, minutes: 59, timeZonetoComapre: dutyOnTimezone){
             //0000 - 0359 Local
@@ -368,7 +354,19 @@ struct MOTModel{
     
     var mustDutyOffat :Date{
         
-        return dutyOn.addingTimeInterval(maxDutyPeriod).addingTimeInterval(deltaTime)
+        //THe value of mustduty off returned here changes when the Local duty on is changed or the time zone is entered
+        //first.
+        
+        
+        //maybe try updating this function to force a timezone.
+        
+        print("The value of mustDutyOffat is: \(dutyOn.addingTimeInterval(maxDutyPeriod).addingTimeInterval(deltaTime))")
+        print("The value of maxduty period is: \(maxDutyPeriod)")
+        print("The value of deltaTIme is: \(deltaTime)")
+          
+        
+        return dutyOn.addingTimeInterval(maxDutyPeriod)
+        
            }
     
     // Duty Time Remaining
@@ -447,7 +445,6 @@ struct MOTModel{
             
             return "Error: check response conditions"
         }
-        
         
         
     }
